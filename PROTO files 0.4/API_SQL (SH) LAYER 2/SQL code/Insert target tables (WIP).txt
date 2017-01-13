@@ -1,0 +1,60 @@
+CREATE TABLE PLAYER_SUMMARY
+(
+  profilestate INT NOT NULL,
+  steamid INT NOT NULL,
+  personstate INT NOT NULL,
+  profileurl VARCHAR (255) NOT NULL,
+  communityvisibilitystate INT NOT NULL,
+  lastlogoff INT NOT NULL,
+  avatar VARCHAR (255),
+  avatarfull VARCHAR(255),
+  commentpermission INT,
+  avatarmedium VARCHAR (255),
+  personaname VARCHAR (255),
+  PRIMARY KEY (steamid)
+);
+
+CREATE TABLE MATCH_DETAILS
+(
+  tower_status_dire INT NOT NULL,
+  pre_game_duration INT,
+  positive_votes INT,
+  dire_name VARCHAR (110) NOT NULL,
+  radiant_team_id INT,
+  match_seq_num INT NOT NULL,
+  dire_team_id INT,
+  lobby_type INT NOT NULL,
+  picks_bans VARCHAR (255), #Temporary table in the future. INT or CHAR data
+                            #type may throw errors here,
+  first_blood_time INT NOT NULL,
+  cluster_name VARCHAR (110) NOT NULL,
+  radiant_logo INT,
+  cluster INT,
+  radiant_captain INT,
+  human_players INT NOT NULL,
+  flags INT,
+  barracks_status_radiant INT,
+  radiant_name VARCHAR (110),
+  leagueid INT,
+  barracks_status_dire INT NOT NULL,
+  negative_votes INT,
+  dire_logo INT,
+  -- possible error location vvv
+  radiant_win TINYINT, /* - BOOLEAN NOT NULL DEFAULT, #random error? */
+  game_mode INT NOT NULL,
+  duration INT NOT NULL,
+  dire_team_complete TINYINT,
+  dire_captain INT,
+  engine INT NOT NULL,
+  lobby_name VARCHAR (110) NOT NULL,
+  start_time INT NOT NULL,
+  radiant_score INT,
+  radiant_team_complete VARCHAR (255), --  Change to Temporary table to store array --
+  match_id INT NOT NULL, -- pk
+  players VARCHAR (255), -- Change to Temporary table to store array --
+  tower_status_radiant INT NOT NULL,
+  game_mode_name VARCHAR(255),
+  dire_score INT NOT NULL,
+  PRIMARY KEY (match_id),
+  FOREIGN KEY (match_seq_num) REFERENCES PLAYER_SUMMARY (steamid)
+);
