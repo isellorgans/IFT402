@@ -2,10 +2,12 @@ from leagues.forms import UserForm, UserProfileForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from leagues.models import League
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the leagues index.")
+    # return HttpResponse("Hello, world. You're at the leagues index.")
+    return render(request, "leagues/index.html", )
 
 
 def register(request):
@@ -71,3 +73,17 @@ def user_login(request):
 
     else:
         return render(request, "leagues/login.html")
+
+
+def public_leagues(request, league_name_slug):
+    context_dict = {}
+
+    # try:
+    league = League.objects.get(slug=league_name_slug)
+
+    context_dict['league'] = league
+
+    # except League.DoesNotExist:
+    # context_dict['league'] = None
+
+    return render(request, 'leagues/public_leagues.html', context_dict)
