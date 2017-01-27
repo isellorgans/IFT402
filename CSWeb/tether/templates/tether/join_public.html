@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% load  staticfiles %}
+
+<html>
+<head>
+	<title>Online League Station | Create or Join Leagues</title>
+	<link rel="stylesheet" type="text/css" href="{% static  'css/bootstrap.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static  'css/style.css'%}">
+</head>
+<body class="container">
+	<header><img src="img/logo.png" alt="Logo"></header><br>
+	<nav>
+		<ul class="nav nav-pills nav-justified">
+			<li><a href={% url 'index' %}>Home</a></li>
+			<li class="active"><a href="#">Join League</a></li>
+			<li><a href="create.html">Create League</a></li>
+		</ul>
+	</nav>
+	<hr>
+	<div class="welcome">
+		<h3>Join Public League</h3>
+		<hr>
+		<div class="jumbotron">
+			<div class="row">
+				<div class="col-lg-5"><img src="img/image.png" alt="Image"></div>
+				<div class="col-lg-7">
+					<p>We offer the largest number of Public leagues on the internet with the most competitive and challenging environment.</p>
+					<p>Join a league and play in tournaments of all your favorite games. Browse through the leagues below and when you find one you like, click on "Join Now".</p>
+				</div>
+			</div>
+		</div>
+		<hr>
+	</div>
+	<div class="available_league">
+		<h3>Active Public Leagues</h3>
+		<hr>
+		<div class="row">
+			<div class="col-md-6">
+				<label for="search" class="col-md-2">Search</label>
+				<div class="col-md-10">
+					<input type="text" name="search" class="form-control">
+				</div>
+			</div>
+		</div><br>
+		<div class="league_table">
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th>Leagues</th>
+					<th>Types</th>
+					<th>Players</th>
+					<th>Join</th>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
+				</tr>
+			</table>
+			<div class="row">
+				<div class="pagination pull-right">
+					Page:
+					<nav aria-label="...">
+						<ul class="pagination">
+							<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+							<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+							<li><a href="#">2 <span class="sr-only"></span></a></li>
+							<li><a href="#">3 <span class="sr-only"></span></a></li>
+							<li><a href="#">4 <span class="sr-only"></span></a></li>
+							<li><a href="#">5 <span class="sr-only"></span></a></li>
+							<li><a href="#">6 <span class="sr-only"></span></a></li>
+							<li><a href="#">7 <span class="sr-only"></span></a></li>
+							<li><a href="#">8 <span class="sr-only"></span></a></li>
+							<li><a href="#">9 <span class="sr-only"></span></a></li>
+							<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br><hr>
+	<footer>Footer</footer>
+	<br>
+</body>
+</html>
