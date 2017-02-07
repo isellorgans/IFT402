@@ -1,0 +1,35 @@
+/*.nav > li {
+	border: 1px solid;
+}*/
+
+.nav-tabs > li.active > a {
+	background-color: #ddd;
+}
+
+footer {
+	text-align: center;
+	font-weight: bold;
+}
+
+.form-horizontal .details {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding-top: 5px;
+}
+
+.form-horizontal .details h4 {
+	padding-left: 5em;
+}
+
+.verify_email h2 {
+	text-align: center;
+	font-weight: bold;
+}
+.verify_email .content {
+	font-size: 13pt;
+}
+
+#continue {
+	font-size: 20pt;
+	text-decoration: none;
+}
