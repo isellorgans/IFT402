@@ -26,9 +26,9 @@ class League(models.Model):
     # league_id = models.primary_key = True ###Can be default ID or this
     league_name = models.CharField(max_length=255)
     region = models.CharField(max_length=255)
-    skill_level = models.CharField(max_length=255)
-    members = models.CharField(max_length=255)
-    name = models.ForeignKey(User, on_delete=models.CASCADE)
+    #skill_level = models.CharField(max_length=255)
+    #members = models.CharField(max_length=255)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     slug = models.SlugField(default='', unique=True)
 
     def save(self, *args, **kwargs):
