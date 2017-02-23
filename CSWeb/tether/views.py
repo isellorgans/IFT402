@@ -1,8 +1,11 @@
-from tether.forms import UserForm, UserProfileForm
+from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, get_user
 from tether.models import League
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 def index(request):
@@ -92,3 +95,45 @@ def public_leagues(request, league_name_slug):
 
 def join_public(request):
     return render(request, "tether/join_public.html", )
+
+
+@login_required(login_url='/tether/login/')
+def add_league(request):
+    form = LeagueForm()
+
+    if request.method == 'POST':
+        form = LeagueForm(request.POST)
+        user = User.objects.get(pk=request.user.id)
+
+        if form.is_valid():
+            forminstance = form.save(commit=False)
+            forminstance.owner = user
+            forminstance.save()
+            return index(request)
+        else:
+            print(form.errors)
+    return render(request, 'tether/add_league.html', {'form': form})
+
+
+@login_required()
+def profile(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('settings:profile')
+        else:
+            messages.error(request, 'Please correct the following error(s)')
+    else:
+        user_form = UserForm
+        profile_form = UserProfileForm
+    return render(request, 'tether/user_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+
+
+

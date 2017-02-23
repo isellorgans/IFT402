@@ -2,22 +2,31 @@
 	border: 1px solid;
 }*/
 
+header {
+	background-color: #211431
+}
+
+body, a, th, td {
+	color: #c3e8ef;
+	font-family: 'Sansita', sans-serif;
+}
+
 .nav-tabs > li.active > a {
 	background-color: #ddd;
 }
 
-footer {
+/*footer {
 	text-align: center;
 	font-weight: bold;
-}
+}*/
 
-.form-horizontal .details {
+.form-horizontal .publicLeague, .privateLeague, .profileArea {
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	padding-top: 5px;
 }
 
-.form-horizontal .details h4 {
+.form-horizontal .publicLeague h4, .privateLeague h4 {
 	padding-left: 5em;
 }
 
@@ -32,4 +41,84 @@ footer {
 #continue {
 	font-size: 20pt;
 	text-decoration: none;
+}
+
+.login {
+	float: right;
+	margin: 5px;
+}
+
+.team_table {
+	margin: 15px;
+}
+
+header img {
+	margin: 10px;
+	border-color: #9dbdbc;
+	box-shadow: 0px 0px 10px 3px #9dbdbc;
+}
+
+.container {
+	background-color: #4a597e; /*Silver color*/ 
+}
+
+.table {
+	background-color: #eeeeee;
+}
+
+.privateLeague, .publicLeague, .profileArea {
+	background-color: #eeeeee;
+}
+
+.profileArea {
+	margin: 0 15px;
+	padding-top: 25px;
+	padding-bottom: 15px;
+	margin-right: 10px;
+}
+
+.footer-social-icons a {
+	color: #c3e8ef;
+}
+
+.jumbotron, td, th, .privateLeague {
+	color: #211431;
+}
+
+.btn-primary {
+	background-color: #4a597e;
+}
+.btn-primary .active {
+	background-color: #4a597e;
+}
+
+.btn-success, .btn-success > .active {
+	background-color: #211431;
+	background-image: linear-gradient(to bottom,#211431 0,rgb(43, 30, 64) 100%);
+	border-color: #42466f;
+}
+
+.btn-success:hover {
+	background-color: #211431;
+	border-color: #70818a;
+}
+
+.pagination > .active > a,
+.active > a:hover {
+	background-color: #4a597e;
+    border-color: #4a597e;
+}
+
+.nav-tabs > li.active > a {
+    background-color: #211431;
+    color: #c3e8ef;
+    border-color: #211431;
+}
+
+.nav-tabs.nav-justified > .active > a {
+	border-bottom-color: #211431;
+}
+
+.lcol {
+	width: 30%; 
 }
