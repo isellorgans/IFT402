@@ -5,13 +5,13 @@
 <head>
 	<title>Online League Station | Create or Join Leagues</title>
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body class="container">
 	<header>
-		<a href="intro.html"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
 		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
 		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
 	</header><br>
@@ -39,7 +39,7 @@
 		<hr>
 	</div>
 	<div class="active_leagues">
-		<h3>Active Leagues</h3>
+		<h3>Featured Leagues</h3>
 		<hr>
 		<div class="row">
 			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="{% static "images/league1.png" %}" alt="League 1"></a></div>

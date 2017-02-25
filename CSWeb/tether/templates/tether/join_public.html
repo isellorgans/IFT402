@@ -5,13 +5,13 @@
 <head>
 	<title>Online League Station | Community Leagues</title>
 	<link rel="stylesheet" type="text/css" href="{% static  'css/bootstrap.css'%}">
-	<link rel="stylesheet" type="text/css" href="{% static  'css/font-awesome.min.css'%}">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static  'css/style.css'%}">
 </head>
 <body class="container">
 	<header>
-		<a href="intro.html"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
+		<a href="{% url 'intro' %}"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
 		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
 		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
 	</header><br>
@@ -31,7 +31,7 @@
 			<div class="row">
 				<div class="col-lg-5"><img src="{% static 'images/image.png' %}" alt="Image"></div>
 				<div class="col-lg-7">
-					<p>We offer the largest number of Community leagues on the internet with the most competitive and challenging environmtent.</p>
+					<p>We offer the largest number of Community leagues on the internet with the most competitive and challenging environment.</p>
 					<p>Join a league and play in tournaments of all your favorite games. Browse through the leagues below and when you find one you like, click on "Join Now".</p>
 				</div>
 			</div>

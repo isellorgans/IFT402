@@ -2,7 +2,7 @@ from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user
-from tether.models import League
+from tether.models import League, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -112,28 +112,43 @@ def add_league(request):
             return index(request)
         else:
             print(form.errors)
-    return render(request, 'tether/add_league.html', {'form': form})
+    return render(request, 'tether/create.html', {'form': form})
 
 
-@login_required()
+@login_required(login_url='/tether/login/')
 def profile(request):
-    if request.method == 'POST':
-        user_form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile was successfully updated!')
-            return redirect('settings:profile')
-        else:
-            messages.error(request, 'Please correct the following error(s)')
-    else:
-        user_form = UserForm
-        profile_form = UserProfileForm
-    return render(request, 'tether/user_profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
+
+    return render(request, 'tether/user_profile.html')
 
 
+    ###Updating Profiles
+    #if request.method == 'POST':
+        #user_form = UserForm(request.POST)
+        #profile_form = UserProfileForm(request.POST)
+        #if user_form.is_valid() and profile_form.is_valid():
+            #user = user_form.save()
 
+            # Hashing the password
+            #user.set_password(user.password)
+            #user.save()
+
+            # Saving userprofile information
+            #profile = profile_form.save(commit=False)
+            #profile.user = user
+
+            #profile.save()
+            #messages.success(request, 'Your profile was successfully updated!')
+            #return redirect('settings:profile')
+        #else:
+            #messages.error(request, 'Please correct the following error(s)')
+    #else:
+        #user_form = UserForm
+        #profile_form = UserProfileForm
+    #return render(request, 'tether/user_profile.html', {
+        #'user_form': user_form,
+        #'profile_form': profile_form
+    #})
+
+
+def intro(request):
+    return render(request, "tether/intro.html")

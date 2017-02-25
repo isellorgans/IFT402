@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'CSWeb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'CapstoneDB',
+        'NAME': 'capstonedb',
         'USER': 'root',
         'PASSWORD': '15vmlTG:re',
         'HOST': 'localhost',

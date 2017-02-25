@@ -5,13 +5,13 @@
 <head>
 	<title>Online League Station | Profile Area</title>
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body class="container">
 	<header>
-		<a href="intro.html"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
+		<a href="{% url 'intro' %}"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
 		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
 		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
 	</header><br>
@@ -42,19 +42,18 @@
 		<h3>Personal Information</h3>
 		<hr>
 		<div class="row">
-			<form class="form-horizontal" action="#">
-				<div class="profileArea">
+  			<div class="profileArea">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="team_table">
 								<table class="table table-bordered table-hover">
 									<tr>
 										<td class="lcol"><strong>Username</strong></td>
-										<td></td>
+										<td>{{ user.username }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Region</strong></td>
-										<td></td>
+										<td>{{ user.userprofile.region }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Steam Id</strong></td>
@@ -67,14 +66,13 @@
 									<tr>
 										<td class="lcol"><strong>League Rank</strong></td>
 										<td></td>
-									</tr>
-								</table>
-							</div>
-						</div>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
 					</div>
 			    	<br>
-			    </div>
-			</form>
+            </div>
 		</div>
 	</div>
 	<hr>

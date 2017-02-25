@@ -5,10 +5,10 @@
 <head>
 	<title>Online League Station | Create League</title>
 	<link rel="stylesheet" href="{% static  'css/bootstrap.css'%}">
-	<link rel="stylesheet" type="{% static  'css/font-awesome.min.css'%}">
+	<link rel="stylesheet" type="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" href="{% static  'css/style.css'%}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="{% static  'scripts/bootstrap.js'%}"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -34,7 +34,7 @@
 </head>
 <body class="container">
 	<header>
-		<a href="intro.html"><img src="{% static  'images/logo.jpg'%}" class="img img-rounded"></a>
+		<a href="{% url 'intro' %}"><img src="{% static  'images/logo.jpg'%}" class="img img-rounded"></a>
 		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
 		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
 	</header><br>
@@ -84,31 +84,31 @@
 							<th>#</th>
 							<th>League Name</th>
 							<th>Status</th>
-							<th>Invite</th>
+							<th>Join</th>
 						</tr>
 						<tr>
 							<td>1</td>
 							<td></td>
 							<td></td>
-							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Invite &nbsp;</button></td>
+							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
 						</tr>
 						<tr>
 							<td>2</td>
 							<td></td>
 							<td></td>
-							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Invite &nbsp;</button></td>
+							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
 						</tr>
 						<tr>
 							<td>3</td>
 							<td></td>
 							<td></td>
-							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Invite &nbsp;</button></td>
+							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
 						</tr>
 						<tr>
 							<td>4</td>
 							<td></td>
 							<td></td>
-							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Invite &nbsp;</button></td>
+							<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
 						</tr>
 					</table>
 				</div>
@@ -118,12 +118,13 @@
 		    	<br>
                 {{ form.non_field_errors }}
 			    <div class="form-group">
-			        <label for="{{ form. }}" class="col-sm-offset-1 col-sm-2 control-label">League Name</label>
+                    {{ form.league_name.errors }}
+			        <label for="{{ form.league_name.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">League Name</label>
 			        <div class="col-sm-5">
-			            <input type="text" class="form-control" name="leagueName" id="leagueName" placeholder="League Name">
+			            {{ form.league_name }}
 			        </div>
 			    </div>
-			    <div class="form-group">
+		    <div class="form-group">
 			        <label for="accessType" class="col-sm-offset-1 col-sm-2 control-label">Access Type</label>
 			        <div class="col-sm-5">
 			            <select name="accessType" id="accessType" class="form-control">
@@ -133,7 +134,6 @@
 			            </select>
 			        </div>
 			    </div>
-
 			    <br>
 			    <div>
 			    	<div class="form-group row">
