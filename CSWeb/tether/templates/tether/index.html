@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-{% load  staticfiles %}
+{% load staticfiles %}
 
 <html>
 <head>
 	<title>Online League Station | Create or Join Leagues</title>
-	<link rel="stylesheet" type="text/css" href="{% static  'css/bootstrap.css'%}">
-	<link rel="stylesheet" type="text/css" href="{% static  'css/style.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body class="container">
-	<header><img src="img/logo.png" alt="Logo"></header><br>
+	<header>
+		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
+		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+	</header><br>
 	<nav>
-		<ul class="nav nav-pills nav-justified">
+		<ul class="nav nav-tabs nav-justified">
 			<li class="active"><a href="#">Home</a></li>
-			<li><a href={% url 'join_public' %}>Join League</a></li>
-			<li><a href="create.html">Create League</a></li>
+			<li><a href="{% url 'join_public' %}">Community League</a></li>
+			<li><a href="{% url 'add_league' %}">Private Leagues</a></li>
+			<li><a href="{% url 'profile' %}">Profile</a></li>
 		</ul>
 	</nav>
 	<hr>
@@ -22,7 +29,7 @@
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="img/image.png" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static "images/image.png" %}" alt="Image"></div>
 				<div class="col-lg-7">
 					<p>Welcome! Play your favorite online games while competing with other players across the globe. Join a League today to get started.
 					</p>
@@ -32,35 +39,32 @@
 		<hr>
 	</div>
 	<div class="active_leagues">
-		<h3>Active Leagues</h3>
+		<h3>Featured Leagues</h3>
 		<hr>
 		<div class="row">
-			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="img/league1.png" alt="League 1"></a></div>
-			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="img/league2.png" alt="League 2"></a></div>
-			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="img/league3.png" alt="League 3"></a></div>
+			<div class="col-md-4"><a href="#">League Name: {{ leaguename0 }}<br/>Region: {{ leagueregion0 }}<br/> Players: {{ leagueplayers0 }}</a></div>
+			<div class="col-md-4"><a href="#">League Name: {{ leaguename1 }}<br/>Region: {{ leagueregion1 }}<br/> Players: {{ leagueplayers1 }}</a></div>
+			<div class="col-md-4"><a href="#">League Name: {{ leaguename2 }}<br/>Region: {{ leagueregion2 }}<br/> Players: {{ leagueplayers2 }}</a></div>
 		</div>
 		<br>
 		<div class="row">
-			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="img/league4.png" alt="League 4"></a></div>
-			<div class="col-md-4"><a href="#"><img class="img img-rounded" src="img/league5.png" alt="League 5"></a></div>
+			<div class="col-md-4"><a href="#">League Name: {{ leaguename3 }}<br/>Region: {{ leagueregion3 }}<br/> Players: {{ leagueplayers3 }}</a></div>
+			<div class="col-md-4"><a href="#">League Name: {{ leaguename4 }}<br/>Region: {{ leagueregion4 }}<br/> Players: {{ leagueplayers4 }}</a></div>
 			<div class="col-md-4"><br><br><br><a href="#"><p id="continue">. . . <br> continue</p></a></div>
 		</div>
 	</div>
 	<hr>
-	<div class="lower_content">
-		<table class="table table-bordered table-striped">
-			<tr>
-				<th>Recent Matches</th>
-				<th>Result</th>
-			</tr>
-			<tr>
-				<td><br><br><br><br><br><br><br><br><br></td>
-				<td><br><br><br><br><br><br><br><br><br></td>
-			</tr>
-		</table>
-	</div>
-	<br><hr>
-	<footer>Footer</footer>
+	<footer>
+		<div class="footer-social-icons">
+				<p>Contact Us:</p>
+				<ul class="list-inline">
+					<li><a href="#"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-facebook-official fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-slack fa-lg" aria-hidden="true"></i></a></li>
+				</ul>
+			</div>
+	</footer>
 	<br>
 </body>
 </html>

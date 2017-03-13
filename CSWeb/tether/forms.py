@@ -1,4 +1,4 @@
-from tether.models import UserProfile
+from tether.models import UserProfile, League
 from django.contrib.auth.models import User
 from django import forms
 
@@ -18,3 +18,11 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('region',)
+
+
+class LeagueForm(forms.ModelForm):
+    slug = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = League
+        fields = ('league_name', 'region', 'skill_level', 'password', 'slug')

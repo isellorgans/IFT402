@@ -23,6 +23,10 @@ STATIC_DIR = os.path.join(BASE_DIR, 'tether/static')
 
 MEDIA_DIR = os.path.join(BASE_DIR, 'tether/media')
 
+#FIXTURE_DIRS = os.path.join(BASE_DIR, 'tether/fixtures')
+
+AUTH_PROFILE_MODULE = "tether.UserProfile"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +88,7 @@ WSGI_APPLICATION = 'CSWeb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'CapstoneDB',
+        'NAME': 'capstonedb',
         'USER': 'root',
         'PASSWORD': '15vmlTG:re',
         'HOST': 'localhost',
@@ -122,14 +127,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATICFILES_DIRS = [STATIC_DIR, ]
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
+
 
 # SITE_MEDIA_ROOT = os.path.join(
 #    os.path.dirname(__file__), 'tether/', 'static/', 'site_media'
