@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django_tables2',
 ]
 
-MIDDLEWARE = [
+# http://stackoverflow.com/questions/37949198/wsgirequest-object-has-no-attribute-user-django-admin
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

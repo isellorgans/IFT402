@@ -14,9 +14,10 @@ from django.views.generic.edit import CreateView
 
 def index(request):
     context = dict()
-
+    return render(request, "tether/index.html")
+    '''
     try:
-        l = League.objects.annotate(user_count=Count('userprofile')).order_by('-user_count')[:5]
+        l = League.objects.annotate(user_count=Count('userprofile1')).order_by('-user_count')[:5]
 
         context['leaguename0'] = l[0].league_name
         context['leagueregion0'] = l[0].region
@@ -42,6 +43,7 @@ def index(request):
         l = 'null'
 
     return render(request, "tether/index.html", context)
+#'''
 
 
 def register(request):
