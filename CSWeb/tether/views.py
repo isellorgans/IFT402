@@ -2,7 +2,7 @@ from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user
-from tether.models import League, UserProfile
+from tether.models import League, UserProfile1
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages

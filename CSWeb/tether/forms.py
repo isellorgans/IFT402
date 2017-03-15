@@ -1,4 +1,4 @@
-from tether.models import UserProfile, League
+from tether.models import UserProfile1, League
 from django.contrib.auth.models import User
 from django import forms
 
@@ -16,7 +16,7 @@ class UserForm(forms.ModelForm):
 # Additional form for more attributes to user profile.
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = UserProfile
+        model = UserProfile1
         fields = ('region',)
 
 
