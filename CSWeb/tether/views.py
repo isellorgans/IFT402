@@ -1,12 +1,49 @@
-from tether.forms import UserForm, UserProfileForm
+from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-from tether.models import League
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, get_user
+from tether.models import League, UserProfile1
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.db.models import Count
+from django_tables2 import RequestConfig
+from tether.tables import LeagueTable
+from django.views.generic.edit import CreateView
 
 
 def index(request):
-    return render(request, "tether/index.html", )
+    context = dict()
+    return render(request, "tether/index.html")
+    '''
+    try:
+        l = League.objects.annotate(user_count=Count('userprofile1')).order_by('-user_count')[:5]
+
+        context['leaguename0'] = l[0].league_name
+        context['leagueregion0'] = l[0].region
+        context['leagueplayers0'] = l[0].userprofile_set.count() + 1
+
+        context['leaguename1'] = l[1].league_name
+        context['leagueregion1'] = l[1].region
+        context['leagueplayers1'] = l[1].userprofile_set.count() + 1
+
+        context['leaguename2'] = l[2].league_name
+        context['leagueregion2'] = l[2].region
+        context['leagueplayers2'] = l[2].userprofile_set.count() + 1
+
+        context['leaguename3'] = l[3].league_name
+        context['leagueregion3'] = l[3].region
+        context['leagueplayers3'] = l[3].userprofile_set.count() + 1
+
+        context['leaguename4'] = l[4].league_name
+        context['leagueregion4'] = l[4].region
+        context['leagueplayers4'] = l[4].userprofile_set.count() + 1
+
+    except IndexError:
+        l = 'null'
+
+    return render(request, "tether/index.html", context)
+#'''
 
 
 def register(request):
@@ -22,7 +59,6 @@ def register(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
 
-            # Hashing the password
             user.set_password(user.password)
             user.save()
 
@@ -91,4 +127,66 @@ def public_leagues(request, league_name_slug):
 
 
 def join_public(request):
-    return render(request, "tether/join_public.html", )
+    table = LeagueTable(League.objects.all())
+    RequestConfig(request, paginate={'per_page': 20}).configure(table)
+
+    return render(request, "tether/join_public.html", {'table': table})
+
+
+@login_required(login_url='/tether/login/')
+def add_league(request):
+
+    if request.method == 'POST':
+        form = LeagueForm(request.POST)
+        user = User.objects.get(pk=request.user.id)
+
+        if form.is_valid():
+            forminstance = form.save(commit=False)
+            forminstance.owner = user
+            forminstance.save()
+            return index(request)
+        else:
+            print(form.errors)
+    else:
+        form = LeagueForm()
+
+    return render(request, 'tether/create.html', {'form': form})
+
+
+@login_required(login_url='/tether/login/')
+def profile(request):
+
+    return render(request, 'tether/user_profile.html')
+
+
+    #Updating Profiles
+    #if request.method == 'POST':
+        #user_form = UserForm(request.POST)
+        #profile_form = UserProfileForm(request.POST)
+        #if user_form.is_valid() and profile_form.is_valid():
+            #initial_data = user_form.save()
+
+            #Hashing the password
+            #initial_data.set_password(initial_data.password)
+            #initial_data.save()
+
+            #Saving userprofile information
+            #profile = profile_form.save(commit=False)
+            #profile.user = user
+
+            #profile.save()
+            #messages.success(request, 'Your profile was successfully updated!')
+            #return redirect('settings:profile')
+        #else:
+            #messages.error(request, 'Please correct the following error(s)')
+    #else:
+        #user_form = UserForm
+        #profile_form = UserProfileForm
+    #return render(request, 'tether/user_profile.html', {
+        #'user_form': user_form,
+        #'profile_form': profile_form
+    #})
+
+
+def intro(request):
+    return render(request, "tether/intro.html")
