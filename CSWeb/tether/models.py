@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.db.models import Count
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # League model, PK is league_id and FK is to User
@@ -8,10 +11,27 @@ class League(models.Model):
     # league_id = models.primary_key = True ###Can be default ID or this
     league_name = models.CharField(max_length=255)
     region = models.CharField(max_length=255)
-    #skill_level = models.CharField(max_length=255)
+    SKILL_LEVELS = (
+        ('Bronze', 'Bronze'),
+        ('Silver', 'Silver'),
+        ('Gold', 'Gold'),
+        ('Platinum', 'Platinum'),
+        ('Diamond', 'Diamond'),
+    )
+    skill_level = models.CharField(max_length=255, default='BZ', blank=True, choices=SKILL_LEVELS)
     #members = models.CharField(max_length=255)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    password = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(default='', unique=True)
+
+    def players(self):
+        return self.userprofile_set.count() + 1
+
+    def password_status(self):
+        if self.password is not '' or None:
+            return "Yes"
+        else:
+            return "No"
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.league_name)
@@ -54,79 +74,9 @@ class RecentMatches(models.Model):
         return self.name
 
 
-# Expanding the default django User class to add more fields/attributes
-# One to one with django default user
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    region = models.CharField(max_length=255)
-    steam_id = models.IntegerField(unique=True, editable=False, blank=True, null=True)
-    win_rate = models.DecimalField(max_digits=10, decimal_places=2, default='0000000000',)
-    average_gpm = models.DecimalField(max_digits=6, decimal_places=2, default='000000',)
-    league_rank = models.CharField(max_length=255, default='Bronze',)
-    recent_matches = models.ManyToManyField(RecentMatches)
-
-    class Meta:
-        db_table = "profile"
-
-    # Returns username instead of unicode
-    def __unicode__(self):
-        return self.name
-
-
-class CommonData(models.Model):
-    num_match = models.ForeignKey(RecentMatches, default=1)
-    lobby_name = models.CharField(max_length=200)
-    game_mode = models.CharField(max_length=200)
-    match_id = models.CharField(max_length=200)
-    human_players = models.IntegerField()
-    engine = models.IntegerField()
-    game_mode_name = models.CharField(max_length=200)
-    duration = models.IntegerField()
-    cluster = models.IntegerField()
-    start_time = models.IntegerField()
-    lobby_type = models.IntegerField()
-
-    class Meta:
-        db_table = "common_data"
-
-    # idk what this does
-    # Returns username instead of unicode
-    def __unicode__(self):
-        return self.name
-
-
-class DotaData(models.Model):
-        num_match = models.ForeignKey(RecentMatches, default=1, )
-        tower_status_radiant = models.IntegerField()
-        radiant_win = models.BooleanField()
-        pre_game_duration = models.IntegerField()
-        tower_status_dire = models.IntegerField()
-        barracks_status_radiant = models.IntegerField()
-        flags = models.IntegerField()
-        leagueid = models.IntegerField()
-        match_id = models.CharField(max_length=200)
-        cluster_name = models.CharField(max_length=200)
-        positive_votes = models.IntegerField()
-        radiant_score = models.IntegerField()
-        match_seq_num = models.BigIntegerField()
-        barracks_status_dire = models.IntegerField()
-        first_blood_time = models.IntegerField()
-        dire_score = models.IntegerField()
-        negative_votes = models.IntegerField()
-
-        class Meta:
-            db_table = "dota_data"
-
-            # Returns username instead of unicode
-
-        def __unicode__(self):
-            return self.name
-
-
 class MatchPlayers(models.Model):
-    in_match = models.ForeignKey(DotaData, default=1)
+    #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE)
+    #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE, default=1)
     player0_id = models.BigIntegerField()
     p1ayer3_id = models.BigIntegerField()
     p1ayer1_id = models.BigIntegerField()
@@ -146,21 +96,88 @@ class MatchPlayers(models.Model):
         return self.name
 
 
+class NewRecentMatches1(models.Model):
+    id_match0 = models.CharField(max_length=200)
+    id_match1 = models.CharField(max_length=200)
+    id_match2 = models.CharField(max_length=200)
+    id_match3 = models.CharField(max_length=200)
+    id_match4 = models.CharField(max_length=200)
+    players = models.ManyToManyField(MatchPlayers, through='PlayersInMatch')
+    # steam_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "new_recent_matches1"
+        verbose_name_plural = 'Recent matches'
+
+    # Returns match_id
+    def __unicode__(self):
+        return self.name
+
+
+class PlayersInMatch(models.Model):
+    match_id = models.ForeignKey(NewRecentMatches1)
+    players_id = models.ForeignKey(MatchPlayers)
+
+    class Meta:
+        db_table = "players_in_match"
+        verbose_name_plural = 'Recent matches'
+
+    # Returns match_id
+    def __unicode__(self):
+        return self.name
+
+
+
+# Expanding the default django User class to add more fields/attributes
+# One to one with django default user
+
+
+class UserProfile1(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    leagues = models.ManyToManyField(League)
+    region = models.CharField(max_length=255)
+    steam_id = models.IntegerField(unique=True, editable=False, blank=True, null=True)
+    win_rate = models.DecimalField(max_digits=10, decimal_places=2, default='0000000000',)
+    average_gpm = models.DecimalField(max_digits=6, decimal_places=2, default='000000',)
+    league_rank = models.CharField(max_length=255, default='Bronze',)
+    recent_matches = models.ManyToManyField(NewRecentMatches1, through='Profiles_Matches')
+
+    class Meta:
+        db_table = "profile1"
+
+    # Returns username instead of unicode
+    def __unicode__(self):
+        return self.name
+
+
+class Profiles_Matches(models.Model):
+    profile_id = models.ForeignKey(UserProfile1)
+    match_id = models.ForeignKey(NewRecentMatches1)
+
+    class Meta:
+        db_table = "profiles_matches"
+        verbose_name_plural = 'Recent matches'
+
+    # Returns match_id
+    def __unicode__(self):
+        return self.name
+
+
 class MatchData(models.Model):  # data for individual players, NOT overall match
-    player_in_match = models.ForeignKey(MatchPlayers, default=1)
+    #player_in_match = models.ForeignKey(MatchPlayers.objects.get(), on_delete=models.CASCADE) #add obj variable to define FK
     backpack_2 = models.IntegerField()
     item_4_name = models.CharField(max_length=200)
     kills = models.IntegerField()
     leaver_status_description = models.CharField(max_length=200)
     item_0_name = models.CharField(max_length=200)
     item_3_name = models.CharField(max_length=200)
-    hero_healing = models.IntegerField()
+    hero_healing = models.IntegerField( default=1,blank=True,null=True)
     gold_per_min = models.IntegerField()
     hero_id = models.IntegerField()
     item_0 = models.IntegerField()
     backpack_0 = models.IntegerField()
-    scaled_hero_healing = models.IntegerField()
-    scaled_tower_damage = models.IntegerField()
+    scaled_hero_healing = models.IntegerField(default=1,blank=True,null=True)
+    scaled_tower_damage = models.IntegerField(default=1,blank=True,null=True)
     assists = models.IntegerField()
     item_4 = models.IntegerField()
     tower_damage = models.IntegerField()
@@ -194,10 +211,56 @@ class MatchData(models.Model):  # data for individual players, NOT overall match
         return self.name
 
 
+class CommonData(models.Model):
+    # num_match = models.ForeignKey(RecentMatches, to_field='match_id', on_delete=models.CASCADE)
+    lobby_name = models.CharField(max_length=200)
+    game_mode = models.CharField(max_length=200)
+    match_id = models.CharField(max_length=200)
+    human_players = models.IntegerField()
+    engine = models.IntegerField()
+    game_mode_name = models.CharField(max_length=200)
+    duration = models.IntegerField()
+    cluster = models.IntegerField()
+    start_time = models.IntegerField()
+    lobby_type = models.IntegerField()
 
+    class Meta:
+        db_table = "common_data"
 
+    # idk what this does
+    # Returns username instead of unicode
+    def __unicode__(self):
+        return self.name
 
+#
+class DotaData(models.Model):
+    # num_match = models.ForeignKey(RecentMatches, on_delete=models.CASCADE)
 
+    # num_match = models.ForeignKey(RecentMatches, on_delete=models.CASCADE)
+    tower_status_radiant = models.IntegerField()
+    radiant_win = models.BooleanField()
+    pre_game_duration = models.IntegerField()
+    tower_status_dire = models.IntegerField()
+    barracks_status_radiant = models.IntegerField()
+    flags = models.IntegerField()
+    leagueid = models.IntegerField()
+    match_id = models.CharField(max_length=200)
+    cluster_name = models.CharField(max_length=200)
+    positive_votes = models.IntegerField()
+    radiant_score = models.IntegerField()
+    match_seq_num = models.BigIntegerField()
+    barracks_status_dire = models.IntegerField()
+    first_blood_time = models.IntegerField()
+    dire_score = models.IntegerField()
+    negative_votes = models.IntegerField()
+
+    class Meta:
+        db_table = "dota_data"
+
+        # Returns username instead of unicode
+
+    def __unicode__(self):
+        return self.name
 
 
 

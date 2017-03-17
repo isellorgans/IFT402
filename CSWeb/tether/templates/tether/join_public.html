@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load  staticfiles %}
+{% load django_tables2 %}
 
 <html>
 <head>
@@ -50,44 +51,9 @@
 			</div>
 		</div><br>
 		<div class="league_table">
-			<table class="table table-bordered table-hover">
-				<tr>
-					<th>Leagues</th>
-					<th>Types</th>
-					<th>Players</th>
-					<th>Join</th>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-			</table>
+            <table class="table table-bordered table-hover">
+                {% render_table table %}
+            </table>
 			<div class="row">
 				<div class="pagination pull-right">
 					Page:

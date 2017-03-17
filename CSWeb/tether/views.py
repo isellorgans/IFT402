@@ -2,14 +2,47 @@ from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user
-from tether.models import League, UserProfile
+from tether.models import League, UserProfile1
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Count
+from django_tables2 import RequestConfig
+from tether.tables import LeagueTable
+from django.views.generic.edit import CreateView
 
 
 def index(request):
-    return render(request, "tether/index.html", )
+    context = dict()
+
+    try:
+        l = League.objects.annotate(user_count=Count('userprofile1')).order_by('-user_count')[:5]
+
+        context['leaguename0'] = l[0].league_name
+        context['leagueregion0'] = l[0].region
+        context['leagueplayers0'] = l[0].userprofile1_set.count() + 1
+
+        context['leaguename1'] = l[1].league_name
+        context['leagueregion1'] = l[1].region
+        context['leagueplayers1'] = l[1].userprofile1_set.count() + 1
+
+        context['leaguename2'] = l[2].league_name
+        context['leagueregion2'] = l[2].region
+        context['leagueplayers2'] = l[2].userprofile1_set.count() + 1
+
+        context['leaguename3'] = l[3].league_name
+        context['leagueregion3'] = l[3].region
+        context['leagueplayers3'] = l[3].userprofile1_set.count() + 1
+
+        context['leaguename4'] = l[4].league_name
+        context['leagueregion4'] = l[4].region
+        context['leagueplayers4'] = l[4].userprofile1_set.count() + 1
+
+    except IndexError:
+        l = 'null'
+
+    return render(request, "tether/index.html", context)
+
 
 
 def register(request):
@@ -25,7 +58,6 @@ def register(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
 
-            # Hashing the password
             user.set_password(user.password)
             user.save()
 
@@ -94,12 +126,14 @@ def public_leagues(request, league_name_slug):
 
 
 def join_public(request):
-    return render(request, "tether/join_public.html", )
+    table = LeagueTable(League.objects.all())
+    RequestConfig(request, paginate={'per_page': 20}).configure(table)
+
+    return render(request, "tether/join_public.html", {'table': table})
 
 
 @login_required(login_url='/tether/login/')
 def add_league(request):
-    form = LeagueForm()
 
     if request.method == 'POST':
         form = LeagueForm(request.POST)
@@ -112,6 +146,9 @@ def add_league(request):
             return index(request)
         else:
             print(form.errors)
+    else:
+        form = LeagueForm()
+
     return render(request, 'tether/create.html', {'form': form})
 
 
@@ -121,18 +158,18 @@ def profile(request):
     return render(request, 'tether/user_profile.html')
 
 
-    ###Updating Profiles
+    #Updating Profiles
     #if request.method == 'POST':
         #user_form = UserForm(request.POST)
         #profile_form = UserProfileForm(request.POST)
         #if user_form.is_valid() and profile_form.is_valid():
-            #user = user_form.save()
+            #initial_data = user_form.save()
 
-            # Hashing the password
-            #user.set_password(user.password)
-            #user.save()
+            #Hashing the password
+            #initial_data.set_password(initial_data.password)
+            #initial_data.save()
 
-            # Saving userprofile information
+            #Saving userprofile information
             #profile = profile_form.save(commit=False)
             #profile.user = user
 

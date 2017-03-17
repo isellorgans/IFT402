@@ -72,7 +72,7 @@
 		<hr>
 	</div>
 	<div class="create_account">
-		<form id="league_form" method="post" class="form-horizontal" action="/tether/add_league">
+		<form id="league_form" method="post" class="form-horizontal" action="/tether/add_league/">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
@@ -119,21 +119,29 @@
                 {{ form.non_field_errors }}
 			    <div class="form-group">
                     {{ form.league_name.errors }}
-			        <label for="{{ form.league_name.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">League Name</label>
-			        <div class="col-sm-5">
-			            {{ form.league_name }}
-			        </div>
+                    <label for="{{ form.league_name.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">League Name</label>
+                    {{ form.league_name }}
+                    <div class="col-sm-5"></div>
 			    </div>
-		    <div class="form-group">
-			        <label for="accessType" class="col-sm-offset-1 col-sm-2 control-label">Access Type</label>
-			        <div class="col-sm-5">
-			            <select name="accessType" id="accessType" class="form-control">
-			            	<option selected disabled>--Select Type--</option>
-			            	<option value="public">Visible</option>
-			            	<option value="private">Non-Visible</option>
-			            </select>
-			        </div>
+			    <div class="form-group">
+                    {{ form.region.errors }}
+                    <label for="{{ form.region.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">Region</label>
+                    {{ form.region }}
+                    <div class="col-sm-5"></div>
 			    </div>
+                <div class="form-group">
+                    {{ form.skill_level.errors }}
+                    <label for="{{ form.skill_level.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">Skill Level</label>
+                    {{ form.skill_level }}
+                    <div class="col-sm-5"></div>
+			    </div>
+                <div class="form-group">
+                    {{ form.password.errors }}
+                    <label for="{{ form.password.id_for_label }}" class="col-sm-offset-1 col-sm-2 control-label">Password</label>
+                    {{ form.password }}
+                    <div class="col-sm-5"></div>
+			    </div>
+            </div>
 			    <br>
 			    <div>
 			    	<div class="form-group row">
@@ -142,9 +150,9 @@
 				        </div>
 				    </div>
 			    </div>
-		    </div>
-		</form>
-	</div>
+        </form>
+    </div>
+
 	<br><hr>
 	<footer>
 		<div class="footer-social-icons">
