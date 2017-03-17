@@ -23,6 +23,8 @@ STATIC_DIR = os.path.join(BASE_DIR, 'tether/static')
 
 MEDIA_DIR = os.path.join(BASE_DIR, 'tether/media')
 
+#FIXTURE_DIRS = os.path.join(BASE_DIR, 'tether/fixtures')
+
 AUTH_PROFILE_MODULE = "tether.UserProfile"
 
 # Quick-start development settings - unsuitable for production
@@ -46,9 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
 ]
 
-MIDDLEWARE = [
+# http://stackoverflow.com/questions/37949198/wsgirequest-object-has-no-attribute-user-django-admin
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,12 +130,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATICFILES_DIRS = [STATIC_DIR, ]
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
+
 
 # SITE_MEDIA_ROOT = os.path.join(
 #    os.path.dirname(__file__), 'tether/', 'static/', 'site_media'
