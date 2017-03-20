@@ -136,7 +136,7 @@ class UserProfile1(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     leagues = models.ManyToManyField(League)
     region = models.CharField(max_length=255)
-    steam_id = models.IntegerField(unique=True, editable=False, blank=True, null=True)
+    steam_id = models.IntegerField(editable=False, blank=True, null=True)
     win_rate = models.DecimalField(max_digits=10, decimal_places=2, default='0000000000',)
     average_gpm = models.DecimalField(max_digits=6, decimal_places=2, default='000000',)
     league_rank = models.CharField(max_length=255, default='Bronze',)
@@ -144,15 +144,6 @@ class UserProfile1(models.Model):
 
     class Meta:
         db_table = "profile1"
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile1.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.userprofile.save()
 
     # Returns username instead of unicode
     def __unicode__(self):
