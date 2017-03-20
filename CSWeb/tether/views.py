@@ -10,6 +10,9 @@ from django.db.models import Count
 from django_tables2 import RequestConfig
 from tether.tables import LeagueTable
 from django.views.generic.edit import CreateView
+from django.shortcuts import render
+import tether.models
+import tether.tables
 
 
 def index(request):
@@ -21,29 +24,29 @@ def index(request):
 
         context['leaguename0'] = l[0].league_name
         context['leagueregion0'] = l[0].region
-        context['leagueplayers0'] = l[0].userprofile_set.count() + 1
+        context['leagueplayers0'] = l[0].userprofile1_set.count() + 1
 
         context['leaguename1'] = l[1].league_name
         context['leagueregion1'] = l[1].region
-        context['leagueplayers1'] = l[1].userprofile_set.count() + 1
+        context['leagueplayers1'] = l[1].userprofile1_set.count() + 1
 
         context['leaguename2'] = l[2].league_name
         context['leagueregion2'] = l[2].region
-        context['leagueplayers2'] = l[2].userprofile_set.count() + 1
+        context['leagueplayers2'] = l[2].userprofile1_set.count() + 1
 
         context['leaguename3'] = l[3].league_name
         context['leagueregion3'] = l[3].region
-        context['leagueplayers3'] = l[3].userprofile_set.count() + 1
+        context['leagueplayers3'] = l[3].userprofile1_set.count() + 1
 
         context['leaguename4'] = l[4].league_name
         context['leagueregion4'] = l[4].region
-        context['leagueplayers4'] = l[4].userprofile_set.count() + 1
+        context['leagueplayers4'] = l[4].userprofile1_set.count() + 1
 
     except IndexError:
         l = 'null'
 
     return render(request, "tether/index.html", context)
-#'''
+    '''
 
 
 def register(request):
@@ -156,7 +159,14 @@ def add_league(request):
 @login_required(login_url='/tether/login/')
 def profile(request):
 
-    return render(request, 'tether/user_profile.html')
+    sid = request.user.userprofile1.steam_id
+    table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid))
+                # Manual / force id value
+                # table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(id=1))
+                # table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(players__newrecentmatches1__userprofile1__steam_id=101869174))
+
+                # usr=request.user.id
+    return render(request, 'tether/user_profile.html', {'table': table})
 
 
     #Updating Profiles

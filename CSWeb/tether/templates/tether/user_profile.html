@@ -57,11 +57,11 @@
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Steam Id</strong></td>
-										<td></td>
+										<td>{{ user.userprofile1.steam_id }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Win Rate</strong></td>
-										<td></td>
+										<td>{{ user.userprofile1.newrecentmatches.id_match0 }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>League Rank</strong></td>
@@ -77,14 +77,14 @@
 	</div>
 	<hr>
 	<div class="lower_content">
+
 		<table class="table table-bordered table-striped">
 			<tr>
 				<th>Recent Matches</th>
-				<th>Recent News</th>
 			</tr>
 			<tr>
-				<td><br><br><br><br><br><br><br><br><br></td>
-				<td><br><br><br><br><br><br><br><br><br></td>
+				<td>{% load django_tables2 %}{% render_table table %}</td>
+				<td> </td>
 			</tr>
 		</table>
 	</div>
