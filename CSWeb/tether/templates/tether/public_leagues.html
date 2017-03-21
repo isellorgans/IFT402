@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Leagues</title>
+
 </head>
 <body>
     <h1>Displaying Public League</h1>
@@ -11,8 +14,20 @@
         <h1>{{ league.league_name }}</h1>
         <h1>Region: {{ league.region }}</h1>
         <h2>Skill Level: {{ league.skill_level }}</h2>
-        <h2>Admin: {{ league.name }}</h2>
-        <h3>Members: {{ league.members }}</h3>
+        <h2>Admin: {{ league.owner }}</h2>
+        Members:
+        <ul>
+            {% for userprofile in users %}
+                <li>{{ userprofile.user.username }}</li>
+            {% endfor %}
+        </ul>
+
+
+        <form method="post" action=".">
+            {% csrf_token %}
+            <button id="join_submit" type="submit" class="btn btn-success btn-lg btn-block">Join</button>
+        </form>
+
     </div>
 </body>
 </html>
