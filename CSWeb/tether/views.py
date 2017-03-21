@@ -8,8 +8,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Count
 from django_tables2 import RequestConfig
-from tether.tables import LeagueTable
+from tether.tables import LeagueTable, ResultsTable
 from django.views.generic.edit import CreateView
+from django.db.models import Q
+from django.urls import NoReverseMatch
 
 
 def index(request):
@@ -20,23 +22,28 @@ def index(request):
 
         context['leaguename0'] = l[0].league_name
         context['leagueregion0'] = l[0].region
-        context['leagueplayers0'] = l[0].userprofile1_set.count() + 1
+        context['leagueplayers0'] = l[0].players
+        context['leagueslug0'] = l[0].slug
 
         context['leaguename1'] = l[1].league_name
         context['leagueregion1'] = l[1].region
-        context['leagueplayers1'] = l[1].userprofile1_set.count() + 1
+        context['leagueplayers1'] = l[1].players
+        context['leagueslug1'] = l[1].slug
 
         context['leaguename2'] = l[2].league_name
         context['leagueregion2'] = l[2].region
-        context['leagueplayers2'] = l[2].userprofile1_set.count() + 1
+        context['leagueplayers2'] = l[2].players
+        context['leagueslug2'] = l[2].slug
 
         context['leaguename3'] = l[3].league_name
         context['leagueregion3'] = l[3].region
-        context['leagueplayers3'] = l[3].userprofile1_set.count() + 1
+        context['leagueplayers3'] = l[3].players
+        context['leagueslug3'] = l[3].slug
 
         context['leaguename4'] = l[4].league_name
         context['leagueregion4'] = l[4].region
-        context['leagueplayers4'] = l[4].userprofile1_set.count() + 1
+        context['leagueplayers4'] = l[4].players
+        context['leagueslug4'] = l[4].slug
 
     except IndexError:
         l = 'null'
@@ -112,24 +119,38 @@ def user_login(request):
 def public_leagues(request, league_name_slug):
     context_dict = {}
 
-    # try:
     league = League.objects.get(slug=league_name_slug)
     context_dict['league'] = league
 
-    # admin = League.objects.get(league.name).values()
-    # context_dict['admin'] = admin
+    users = league.userprofile1_set.all()
+    context_dict['users'] = users
 
-    # except League.DoesNotExist:
-    # context_dict['league'] = None
+    if request.method == 'POST':
+        user = User.objects.get(pk=request.user.id)
+        user.userprofile1.leagues.add(league)
+        user.userprofile1.save()
+        league.save()
 
     return render(request, 'tether/public_leagues.html', context_dict)
 
 
 def join_public(request):
+    results = None
+    if request.method == 'GET':
+        search_query = request.GET.get('search_box', None)
+        if search_query is not None:
+            results = ResultsTable(League.objects.filter(
+                Q(league_name__icontains = search_query) |
+                Q(region__icontains = search_query) |
+                Q(skill_level__icontains = search_query) |
+                Q(password_status__icontains= search_query) |
+                Q(players__icontains = search_query)
+            ))
+
     table = LeagueTable(League.objects.all())
     RequestConfig(request, paginate={'per_page': 20}).configure(table)
 
-    return render(request, "tether/join_public.html", {'table': table})
+    return render(request, "tether/join_public.html", {'table': table, 'results': results})
 
 
 @login_required(login_url='/tether/login/')

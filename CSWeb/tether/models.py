@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models import Count
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models import F
 
 
 # League model, PK is league_id and FK is to User
@@ -23,18 +24,29 @@ class League(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     password = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(default='', unique=True)
+    password_status = models.CharField(max_length=3, null=True, blank=True)
+    players = models.IntegerField(null=True, blank=True)
 
-    def players(self):
-        return self.userprofile_set.count() + 1
+    #def players(self):
+        #return self.userprofile1_set.count() + 1
 
-    def password_status(self):
-        if self.password is not '' or None:
-            return "Yes"
-        else:
-            return "No"
+    #def password_status(self):
+        #if self.password is not '' or None:
+            #return "Yes"
+        #else:
+            #return "No"
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.league_name)
+        super(League, self).save(*args, **kwargs)
+
+        if self.password is not '' or None:
+            self.password_status = 'Yes'
+        else:
+            self.password_status = 'No'
+        super(League, self).save(*args, **kwargs)
+
+        self.players = self.userprofile1_set.count()
         super(League, self).save(*args, **kwargs)
 
     class Meta:
@@ -148,6 +160,7 @@ class UserProfile1(models.Model):
     # Returns username instead of unicode
     def __unicode__(self):
         return self.name
+
 
 
 class Profiles_Matches(models.Model):

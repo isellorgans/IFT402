@@ -44,37 +44,26 @@
 		<hr>
 		<div class="row">
 			<div class="col-md-6">
-				<label for="search" class="col-md-2">Search</label>
+				<label for="search_box" class="col-md-2">Search</label>
 				<div class="col-md-10">
-					<input type="text" name="search" class="form-control">
+                    <form method=get action="." style="margin: 0">
+                        <input id="search_box" type="text" name="search_box" class="form-control">
+                        <button id="search_submit" type="submit" class="btn btn-success btn-lg btn-block">Submit</button>
+                    </form>
 				</div>
 			</div>
 		</div><br>
-		<div class="league_table">
-            <table class="table table-bordered table-hover">
-                {% render_table table %}
-            </table>
-			<div class="row">
-				<div class="pagination pull-right">
-					Page:
-					<nav aria-label="...">
-						<ul class="pagination">
-							<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-							<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-							<li><a href="#">2 <span class="sr-only"></span></a></li>
-							<li><a href="#">3 <span class="sr-only"></span></a></li>
-							<li><a href="#">4 <span class="sr-only"></span></a></li>
-							<li><a href="#">5 <span class="sr-only"></span></a></li>
-							<li><a href="#">6 <span class="sr-only"></span></a></li>
-							<li><a href="#">7 <span class="sr-only"></span></a></li>
-							<li><a href="#">8 <span class="sr-only"></span></a></li>
-							<li><a href="#">9 <span class="sr-only"></span></a></li>
-							<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
+        <div class="league_table">
+            {% if results %}
+                <table class="table table-bordered table-hover">
+                    {% render_table results %}
+                </table>
+            {% else %}
+                <table class="table table-bordered table-hover">
+                    {% render_table table %}
+                </table>
+            {% endif %}
+        </div>
 	</div>
 	<br><hr>
 	<footer>
