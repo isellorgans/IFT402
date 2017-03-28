@@ -9,18 +9,37 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static  'css/style.css'%}">
+    <style>
+     a > table {
+            color: #211431;
+        }
+    </style>
 </head>
 <body class="container">
 	<header>
-		<a href="{% url 'intro' %}"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
-		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
-		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
+            <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+            <form id="login_form" method="post" action='/tether/login/' class="navbar-form navbar-right">
+            {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-default">Sign In</button>
+            </form>
+        {% endif %}
 	</header><br>
 	<nav>
 		<ul class="nav nav-tabs nav-justified">
 			<li><a href="{% url 'index' %}">Home</a></li>
-			<li class="active"><a href="#">Community League</a></li>
-			<li><a href="{% url 'add_league' %}">Private Leagues</a></li>
+			<li class="active"><a href="#">Community Leagues</a></li>
+			<li><a href="{% url 'add_league' %}">Create Leagues</a></li>
 			<li><a href="{% url 'profile' %}">Profile</a></li>
 		</ul>
 	</nav>
@@ -30,7 +49,7 @@
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="{% static 'images/image.png' %}" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static 'images/community.jpg' %}" alt="Image"></div>
 				<div class="col-lg-7">
 					<p>We offer the largest number of Community leagues on the internet with the most competitive and challenging environment.</p>
 					<p>Join a league and play in tournaments of all your favorite games. Browse through the leagues below and when you find one you like, click on "Join Now".</p>
@@ -48,7 +67,7 @@
 				<div class="col-md-10">
                     <form method=get action="." style="margin: 0">
                         <input id="search_box" type="text" name="search_box" class="form-control">
-                        <button id="search_submit" type="submit" class="btn btn-success btn-lg btn-block">Submit</button>
+                        <button id="search_submit" type="submit" class="btn btn-success btn-block">Submit</button>
                     </form>
 				</div>
 			</div>
