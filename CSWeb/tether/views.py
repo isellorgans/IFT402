@@ -1,8 +1,8 @@
 from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, get_user
-from tether.models import League, UserProfile1
+from django.contrib.auth import authenticate, login, get_user, logout
+from tether.models import League, UserProfile1, Matches
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -49,7 +49,6 @@ def index(request):
         l = 'null'
 
     return render(request, "tether/index.html", context)
-
 
 
 def register(request):
@@ -105,15 +104,17 @@ def user_login(request):
             # If user is active, log them in and redirect to home
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/tether/')
-            else:
-                return HttpResponse("Your account is currently disabled.")
+                return HttpResponseRedirect('/tether/index')
         else:
             print("Invalid login details: {0}, {1}".format(username, password))
             return HttpResponse("Your username or password was incorrect.")
 
-    else:
-        return render(request, "tether/login.html")
+    return redirect('index')
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('index')
 
 
 def public_leagues(request, league_name_slug):
@@ -125,13 +126,40 @@ def public_leagues(request, league_name_slug):
     users = league.userprofile1_set.all()
     context_dict['users'] = users
 
+    matches = league.matches_set.all()
+    context_dict['matches'] = matches
+
+    user = User.objects.get(pk=request.user.id)
+
+    if league.password_status == 'Yes':
+        context_dict['password'] = True
+
+    if league.owner == user:
+        context_dict['owner'] = True
+
     if request.method == 'POST':
-        user = User.objects.get(pk=request.user.id)
-        user.userprofile1.leagues.add(league)
-        user.userprofile1.save()
-        league.save()
+        if 'join' in request.POST:
+            if league.password_status == "Yes":
+                if request.POST.get('password') == league.password:
+                    user.userprofile1.leagues.add(league)
+                    user.userprofile1.save()
+                    league.save()
+                else:
+                    print("The password was incorrect.")
+            else:
+                user.userprofile1.leagues.add(league)
+                user.userprofile1.save()
+                league.save()
+        elif 'make' in request.POST:
+            m = request.POST.get('makefield')
+            Matches.objects.create(lobby=league, name=m)
 
     return render(request, 'tether/public_leagues.html', context_dict)
+
+
+def matches(request, match_id):
+
+    return render(request, 'tether/matches.html')
 
 
 def join_public(request):
@@ -140,11 +168,11 @@ def join_public(request):
         search_query = request.GET.get('search_box', None)
         if search_query is not None:
             results = ResultsTable(League.objects.filter(
-                Q(league_name__icontains = search_query) |
-                Q(region__icontains = search_query) |
-                Q(skill_level__icontains = search_query) |
-                Q(password_status__icontains= search_query) |
-                Q(players__icontains = search_query)
+                Q(league_name__icontains=search_query) |
+                Q(region__icontains=search_query) |
+                Q(skill_level__icontains=search_query) |
+                Q(password_status__icontains=search_query) |
+                Q(players__icontains=search_query)
             ))
 
     table = LeagueTable(League.objects.all())
@@ -155,7 +183,6 @@ def join_public(request):
 
 @login_required(login_url='/tether/login/')
 def add_league(request):
-
     if request.method == 'POST':
         form = LeagueForm(request.POST)
         user = User.objects.get(pk=request.user.id)
@@ -175,37 +202,36 @@ def add_league(request):
 
 @login_required(login_url='/tether/login/')
 def profile(request):
-
     return render(request, 'tether/user_profile.html')
 
 
-    #Updating Profiles
-    #if request.method == 'POST':
-        #user_form = UserForm(request.POST)
-        #profile_form = UserProfileForm(request.POST)
-        #if user_form.is_valid() and profile_form.is_valid():
-            #initial_data = user_form.save()
+    # Updating Profiles
+    # if request.method == 'POST':
+    # user_form = UserForm(request.POST)
+    # profile_form = UserProfileForm(request.POST)
+    # if user_form.is_valid() and profile_form.is_valid():
+    # initial_data = user_form.save()
 
-            #Hashing the password
-            #initial_data.set_password(initial_data.password)
-            #initial_data.save()
+    # Hashing the password
+    # initial_data.set_password(initial_data.password)
+    # initial_data.save()
 
-            #Saving userprofile information
-            #profile = profile_form.save(commit=False)
-            #profile.user = user
+    # Saving userprofile information
+    # profile = profile_form.save(commit=False)
+    # profile.user = user
 
-            #profile.save()
-            #messages.success(request, 'Your profile was successfully updated!')
-            #return redirect('settings:profile')
-        #else:
-            #messages.error(request, 'Please correct the following error(s)')
-    #else:
-        #user_form = UserForm
-        #profile_form = UserProfileForm
-    #return render(request, 'tether/user_profile.html', {
-        #'user_form': user_form,
-        #'profile_form': profile_form
-    #})
+    # profile.save()
+    # messages.success(request, 'Your profile was successfully updated!')
+    # return redirect('settings:profile')
+    # else:
+    # messages.error(request, 'Please correct the following error(s)')
+    # else:
+    # user_form = UserForm
+    # profile_form = UserProfileForm
+    # return render(request, 'tether/user_profile.html', {
+    # 'user_form': user_form,
+    # 'profile_form': profile_form
+    # })
 
 
 def intro(request):

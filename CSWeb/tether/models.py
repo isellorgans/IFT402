@@ -20,7 +20,6 @@ class League(models.Model):
         ('Diamond', 'Diamond'),
     )
     skill_level = models.CharField(max_length=255, default='BZ', blank=True, choices=SKILL_LEVELS)
-    #members = models.CharField(max_length=255)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     password = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(default='', unique=True)
@@ -55,6 +54,21 @@ class League(models.Model):
     # Returns league name
     def __unicode__(self):
         return self.name
+
+
+class Matches(models.Model):
+    lobby = models.ForeignKey(League, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    player1 = models.CharField(max_length=255, null=True)
+    player2 = models.CharField(max_length=255, null=True)
+    player3 = models.CharField(max_length=255, null=True)
+    player4 = models.CharField(max_length=255, null=True)
+    player5 = models.CharField(max_length=255, null=True)
+    player6 = models.CharField(max_length=255, null=True)
+    player7 = models.CharField(max_length=255, null=True)
+    player8 = models.CharField(max_length=255, null=True)
+    player9 = models.CharField(max_length=255, null=True)
+    player10 = models.CharField(max_length=255, null=True)
 
 
 class PrizePool(models.Model):
@@ -161,6 +175,8 @@ class UserProfile1(models.Model):
     def __unicode__(self):
         return self.name
 
+#class PlayerLeagueSkill(models.Model):
+    #spec_league = models.ForeignKey(League)
 
 
 class Profiles_Matches(models.Model):
