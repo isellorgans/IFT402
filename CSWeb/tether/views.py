@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, get_user
 from tether.models import League, UserProfile1
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
 from django.contrib import messages
 from django.db.models import Count
 from django_tables2 import RequestConfig
@@ -13,6 +15,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render
 import tether.models
 import tether.tables
+from CSWeb import API_get_data
 
 
 def index(request):
@@ -112,6 +115,10 @@ def user_login(request):
     else:
         return render(request, "tether/login.html")
 
+def logout_view(request):
+    logout(request)
+    # Redirect to a success page.
+
 
 def public_leagues(request, league_name_slug):
     context_dict = {}
@@ -155,19 +162,54 @@ def add_league(request):
 
     return render(request, 'tether/create.html', {'form': form})
 
+'''
+def getsid(request):
+    sid = request.user.userprofile1.steam_id
+    return sid
+'''
 
 @login_required(login_url='/tether/login/')
 def profile(request):
 
-    sid = request.user.userprofile1.steam_id
-    table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid))
+    userr = None
+
+    if request.user.is_authenticated():
+        userr = request.user.username
+        sid = request.user.userprofile1.steam_id
+        #r = API_get_data.PlayersAndData()
+        #r.get_profile_match_hist()
+    datatable = tether.tables.PlayerData(tether.models.MatchData.objects.filter(id=120))
+    playertable = tether.tables.PlayerTable(tether.models.MatchPlayers.objects.filter(newrecentmatches1__userprofile1__steam_id=sid), prefix='1-')
+    table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid), prefix='2-')
+    RequestConfig(request).configure(table)
+    RequestConfig(request).configure(playertable)
                 # Manual / force id value
                 # table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(id=1))
                 # table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(players__newrecentmatches1__userprofile1__steam_id=101869174))
 
                 # usr=request.user.id
-    return render(request, 'tether/user_profile.html', {'table': table})
+    #{'playertable': playertable})
+    if request.method == 'POST':
+        view_wanted = request.POST.get('view_wanted')
 
+        return render(request, 'tether/user_profile.html', {'table': table,
+                                                        'playertable': playertable,
+                                                        'playerdata': datatable})
+
+    return render(request, 'tether/user_profile.html', {'table': table,
+                                                        'playertable': playertable,
+                                                        'playerdata': datatable})
+
+
+def matchplayers(request):
+    playertable = tether.tables.PlayerTable(tether.models.MatchPlayers.objects.filter(newrecentmatches1__userprofile1__steam_id=profile.sid), prefix='1-')
+    RequestConfig(request).configure(playertable)
+
+    if request.method == 'POST':
+        view_wanted = request.POST.get('view_wanted')
+        return render(request, {'playertable': playertable})
+
+    return render(request, {playertable: playertable})
 
     #Updating Profiles
     #if request.method == 'POST':

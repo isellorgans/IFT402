@@ -87,6 +87,62 @@
 				<td> </td>
 			</tr>
 		</table>
+        <br />
+        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
+                <select name="view_wanted">
+                    <option value="matchplayers" >See Players for Match 0</option>
+                    <option value="matchplayers" >See Players for Match 1</option>
+                    <option value="matchplayers" >See Players for Match 2</option>
+                    <option value="matchplayers" >See Players for Match 3</option>
+                    <option value="matchplayers" >See Players for Match 4</option>
+
+                </select>
+            <input type="submit" value="View Players" />
+        </form>
+
+        <table class="table table-bordered table-striped">
+			<tr>
+				<th>Match Players</th>
+			</tr>
+			<tr>
+				<td>
+                    {% load django_tables2 %}{% render_table playertable %} {# remove whem conditional works #}
+                    {% if option in form == "matchplayers"%}
+
+                        % load django_tables2 %}{% render_table playertable %}
+
+                    {% endif %}
+
+                </td>
+				<td> </td>
+			</tr>
+		</table>
+        <br />
+        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
+                <select name="view_wanted">
+                    <option value="matchplayers" >See Data for Player 0</option>
+                    <option value="matchplayers" >See Data for Player 1</option>
+                    <option value="matchplayers" >See Data for Player 2</option>
+                    <option value="matchplayers" >See Data for Player 3</option>
+                    <option value="matchplayers" >See Data for Player 4</option>
+                    <option value="matchplayers" >See Data for Player 5</option>
+                    <option value="matchplayers" >See Data for Player 6</option>
+                    <option value="matchplayers" >See Data for Player 7</option>
+                    <option value="matchplayers" >See Data for Player 8</option>
+                    <option value="matchplayers" >See Data for Player 9</option>
+
+                </select>
+            <input type="submit" value="View Data" />
+        </form>
+        <table class="table table-bordered table-striped">
+			<tr>
+				<th>Match Data</th>
+			</tr>
+			<tr>
+				<td>{% load django_tables2 %}{% render_table playerdata %}</td>
+				<td> </td>
+			</tr>
+		</table>
 	</div>
 	<br><hr>
 	<footer>

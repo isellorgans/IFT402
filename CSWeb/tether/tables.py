@@ -20,3 +20,14 @@ class MatchTable(tables.Table):
     class Meta:
         model = models.NewRecentMatches1
         attrs = {'class': 'table table-bordered table-hover'}
+
+
+class PlayerTable(tables.Table):
+    class Meta:
+        model = models.MatchPlayers
+        attrs = {'class': 'table table-bordered table-hover'}
+
+class PlayerData(tables.Table):
+    class Meta:
+        model = models.MatchData
+        attrs = {'class': 'table table-bordered table-hover'}
