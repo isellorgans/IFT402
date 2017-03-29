@@ -1,110 +1,101 @@
 <!DOCTYPE html>
 {% load  staticfiles %}
+{% load django_tables2 %}
 
 <html>
 <head>
-	<title>Online League Station | Create or Join Leagues</title>
+	<title>Online League Station | Community Leagues</title>
 	<link rel="stylesheet" type="text/css" href="{% static  'css/bootstrap.css'%}">
-	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static  'css/style.css'%}">
+    <style>
+     a > table {
+            color: #211431;
+        }
+    </style>
 </head>
 <body class="container">
-	<header><img src="img/logo.png" alt="Logo"></header><br>
+	<header>
+		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
+            <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+            <form id="login_form" method="post" action='/tether/login/' class="navbar-form navbar-right">
+            {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-default">Sign In</button>
+            </form>
+        {% endif %}
+	</header><br>
 	<nav>
-		<ul class="nav nav-pills nav-justified">
-			<li><a href={% url 'index' %}>Home</a></li>
-			<li class="active"><a href="#">Join League</a></li>
-			<li><a href="create.html">Create League</a></li>
+		<ul class="nav nav-tabs nav-justified">
+			<li><a href="{% url 'index' %}">Home</a></li>
+			<li class="active"><a href="#">Community Leagues</a></li>
+			<li><a href="{% url 'add_league' %}">Create Leagues</a></li>
+			<li><a href="{% url 'profile' %}">Profile</a></li>
 		</ul>
 	</nav>
 	<hr>
 	<div class="welcome">
-		<h3>Join Public League</h3>
+		<h3>Join Community League</h3>
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="img/image.png" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static 'images/community.jpg' %}" alt="Image"></div>
 				<div class="col-lg-7">
-					<p>We offer the largest number of Public leagues on the internet with the most competitive and challenging environment.</p>
-					<p>Join a league and play in tournaments of all your favorite games. Browse through the leagues below and when you find one you like, click on "Join Now" andf I am here to look at different changes ekwfijeiwfiwo.</p>
+					<p>We offer the largest number of Community leagues on the internet with the most competitive and challenging environment.</p>
+					<p>Join a league and play in tournaments of all your favorite games. Browse through the leagues below and when you find one you like, click on "Join Now".</p>
 				</div>
 			</div>
 		</div>
 		<hr>
 	</div>
 	<div class="available_league">
-		<h3>Active Public Leagues</h3>
+		<h3>Active Community Leagues</h3>
 		<hr>
 		<div class="row">
 			<div class="col-md-6">
-				<label for="search" class="col-md-2">Search</label>
+				<label for="search_box" class="col-md-2">Search</label>
 				<div class="col-md-10">
-					<input type="text" name="search" class="form-control">
+                    <form method=get action="." style="margin: 0">
+                        <input id="search_box" type="text" name="search_box" class="form-control">
+                        <button id="search_submit" type="submit" class="btn btn-success btn-block">Submit</button>
+                    </form>
 				</div>
 			</div>
 		</div><br>
-		<div class="league_table">
-			<table class="table table-bordered table-striped">
-				<tr>
-					<th>Leagues</th>
-					<th>Types</th>
-					<th>Players</th>
-					<th>Join</th>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><button class="btn btn-primary col-md-offset-3">&nbsp; Join &nbsp;</button></td>
-				</tr>
-			</table>
-			<div class="row">
-				<div class="pagination pull-right">
-					Page:
-					<nav aria-label="...">
-						<ul class="pagination">
-							<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-							<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-							<li><a href="#">2 <span class="sr-only"></span></a></li>
-							<li><a href="#">3 <span class="sr-only"></span></a></li>
-							<li><a href="#">4 <span class="sr-only"></span></a></li>
-							<li><a href="#">5 <span class="sr-only"></span></a></li>
-							<li><a href="#">6 <span class="sr-only"></span></a></li>
-							<li><a href="#">7 <span class="sr-only"></span></a></li>
-							<li><a href="#">8 <span class="sr-only"></span></a></li>
-							<li><a href="#">9 <span class="sr-only"></span></a></li>
-							<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
+        <div class="league_table">
+            {% if results %}
+                <table class="table table-bordered table-hover">
+                    {% render_table results %}
+                </table>
+            {% else %}
+                <table class="table table-bordered table-hover">
+                    {% render_table table %}
+                </table>
+            {% endif %}
+        </div>
 	</div>
 	<br><hr>
-	<footer>Footer</footer>
+	<footer>
+		<div class="footer-social-icons">
+				<p>Contact Us:</p>
+				<ul class="list-inline">
+					<li><a href="#"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-facebook-official fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-slack fa-lg" aria-hidden="true"></i></a></li>
+				</ul>
+			</div>
+	</footer>
 	<br>
 </body>
 </html>
