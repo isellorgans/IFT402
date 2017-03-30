@@ -58,7 +58,7 @@ class PrizePool(models.Model):
     def __unicode__(self):
         return self.name
 
-
+'''
 class RecentMatches(models.Model):
     match_id = models.CharField(max_length=200, primary_key=True)
     match_num = models.CharField(max_length=200)
@@ -73,7 +73,7 @@ class RecentMatches(models.Model):
     def __unicode__(self):
         return self.name
 
-
+'''
 class MatchPlayers(models.Model):
     #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE)
     #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE, default=1)

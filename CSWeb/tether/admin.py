@@ -1,5 +1,5 @@
 from django.contrib import admin
-from tether.models import UserProfile1, League, RecentMatches
+from tether.models import UserProfile1, League#, RecentMatches
 
 
 class LeagueAdmin(admin.ModelAdmin):
@@ -7,4 +7,4 @@ class LeagueAdmin(admin.ModelAdmin):
 
 admin.site.register(UserProfile1)
 admin.site.register(League, LeagueAdmin)
-admin.site.register(RecentMatches)
+#admin.site.register(RecentMatches)
