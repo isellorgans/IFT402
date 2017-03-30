@@ -6,7 +6,8 @@ from tether.models import League, UserProfile1
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
-
+from nested_lookup import nested_lookup
+import dota2api
 from django.contrib import messages
 from django.db.models import Count
 from django_tables2 import RequestConfig
@@ -168,17 +169,301 @@ def getsid(request):
     return sid
 '''
 
+
 @login_required(login_url='/tether/login/')
 def profile(request):
-
-    userr = None
 
     if request.user.is_authenticated():
         userr = request.user.username
         sid = request.user.userprofile1.steam_id
-        #r = API_get_data.PlayersAndData()
-        #r.get_profile_match_hist()
-    datatable = tether.tables.PlayerData(tether.models.MatchData.objects.filter(id=120))
+        #mid = request.user.userprofile1.profiles_matches_set.all()
+
+        #mid = tether.models.NewRecentMatches1.objects.filter(userprofile1__user=request.user)
+        #mat_id = tether.models.NewRecentMatches1.objects.filter(
+        #mat_id = request.user.userprofile1.recent_matches.values('id_match4').distinct()
+
+
+
+
+        api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
+        #-----------------------------------------------------------------------------------------------
+        # --- New recent matches attempt ---#
+
+        class History():
+
+            '''
+            def get_profile_match_hist(self):
+                api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
+                hist = api.get_match_history(account_id=tether.models.UserProfile.objects.values('steam_id'))  # steam id queryset
+                match_list2 = hist
+
+                # nested_lookup('match_id', recent_matches)
+                ids = nested_lookup('match_id', match_list2)  # return in list all ids and dates
+                s_time = nested_lookup('start_time', match_list2)
+
+                match_list = dict(zip(s_time, ids))  # zip ids and dates into dict
+                num_ids = range(4)
+                num_matches2 = range(5)
+                match_incre2 = []
+
+                for i in num_matches2:
+                    match_incre2.append('id_match' + str(i))
+                match_ids = ids[:5]
+                recent_matches2 = dict(zip(match_incre2, match_ids))
+
+
+                matches = {str(k): str(v) for k, v in recent_matches2.items()}
+
+                print(matches)
+                new_entry = tether.models.NewRecentMatches1(**matches)
+                new_entry.save()
+            #get_profile_match_hist()
+            #--- end ---#
+            '''
+
+        class PlayersAndData(History):
+
+
+            # get_match_players()
+            # ----- Save match details / separate players and player details to sep table -----#
+            def get_profile_match_hist(self):
+                sid = request.user.userprofile1.steam_id
+                api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
+                # hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
+
+                # getsid()
+                # hist = api.get_match_history(account_id=views.getsid())
+
+                # test = tether.views.profile.sid
+                hist = api.get_match_history(account_id=sid)
+
+                match_list2 = hist
+
+                # nested_lookup('match_id', recent_matches)
+                ids = nested_lookup('match_id', match_list2)  # return in list all ids and dates
+                s_time = nested_lookup('start_time', match_list2)
+
+                match_list = dict(zip(s_time, ids))  # zip ids and dates into dict
+                num_ids = range(4)
+                num_matches2 = range(5)
+                match_incre2 = []
+
+                for i in num_matches2:
+                    match_incre2.append('id_match' + str(i))
+                match_ids = ids[:5]
+                recent_matches2 = dict(zip(match_incre2, match_ids))
+
+                matches = {str(k): str(v) for k, v in recent_matches2.items()}
+
+                print(matches)
+                new_entry = tether.models.NewRecentMatches1(**matches)
+                # new_entry = p_entry.players.create(tether.models.NewRecentMatches(**matches))
+                new_entry.save()
+
+                prof_id = tether.models.UserProfile1.objects.get(steam_id=sid)
+                prof_id.save()
+                prof = tether.models.Profiles_Matches(profile_id=prof_id, match_id=new_entry)
+                prof.save()
+                plrs = self.get_match_players()
+
+                PIM = tether.models.PlayersInMatch(players_id=plrs, match_id=new_entry)
+                PIM.save()
+
+            # --- end ---#
+            # ----- Set up for match players -----#
+
+
+
+
+            def get_match_players(self):
+                api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
+                #test------
+
+                mid = tether.models.NewRecentMatches1.objects.values('id_match4').distinct()
+                mat_id = tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid).values_list(
+                    'id_match4').distinct()
+
+                print(mid)
+                print(mat_id)
+
+                a = mat_id
+                mat_id = " ".join([x[0] for x in a])
+                print(mat_id)
+
+
+
+                #end test-----
+                match_ini = api.get_match_details(match_id=mat_id)    #tether.models.NewRecentMatches1.objects.filter())
+                ini2 = api.get_match_details(match_id=mat_id)  # tether.models.NewRecentMatches.objects.values.id_match0(3037647418))
+                #hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id')) # steam id queryset
+                hist = api.get_match_history(account_id=sid)
+                # hist = api.get_match_history(account_id=tether.views.profile.sid) # steam id queryset
+                # ----- remove extraneous data -----#
+                if 'picks_bans' in match_ini:
+                    del match_ini['picks_bans']
+                    del ini2['picks_bans']
+
+                if 'ability_upgrades' in hist:
+                    del match_ini['ability_upgrades']
+                    del ini2['ability_upgrades']
+
+                if 'ability_upgrades' in match_ini:
+                    del match_ini['ability_upgrades']
+                    del ini2['ability_upgrades']
+                # ----- end remove -----#
+
+                self.match_plrs = {}
+                self.match_plrs = match_ini.pop("players")
+
+                match_plrs_id = {}
+                temp = {}
+
+                # ----- End set up -----#
+
+                # *****CONVERT TO LOOP
+                temp = self.match_plrs[0]
+                temp = temp.pop("account_id")
+                match_plrs_id['player0_id'] = temp
+
+                temp = self.match_plrs[1]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer1_id'] = temp
+
+                temp = self.match_plrs[2]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer2_id'] = temp
+
+                temp = self.match_plrs[3]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer3_id'] = temp
+
+                temp = self.match_plrs[4]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer4_id'] = temp
+
+                temp = self.match_plrs[5]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer5_id'] = temp
+
+                temp = self.match_plrs[6]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer6_id'] = temp
+
+                temp = self.match_plrs[7]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer7_id'] = temp
+
+                temp = self.match_plrs[8]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer8_id'] = temp
+
+                temp = self.match_plrs[9]
+                temp = temp.pop("account_id")
+                match_plrs_id['p1ayer9_id'] = temp
+
+                # *************** END "LOOP" *******************************
+
+                p_entry = tether.models.MatchPlayers(**match_plrs_id)
+                p_entry.save()
+
+                # p_entry.players.add(self.new_entry)
+                # return self.match_plrs
+                return p_entry
+
+            def get_all_data(self):
+                plrs_match_data = {}
+
+                for account_id in self.match_plrs:
+                    if account_id in self.match_plrs and self.match_plrs != 0:
+                        plrs_match_data = self.match_plrs[1]  # grabs the account id from the player data at the top of the stack
+                        del self.match_plrs[1]  # define function to loop through all players,
+
+                        ### CONNECT FORM VALUE (0-9) HERE ^^^^ ###
+
+
+                if 'ability_upgrades' in plrs_match_data:
+                    del plrs_match_data['ability_upgrades']
+                print(self.match_plrs)
+                print(plrs_match_data)
+                match_data_entry = tether.models.MatchData(**plrs_match_data)
+                match_data_entry.save()
+
+                # ----- End match details -----#
+                # get_all_data()
+
+
+                # ----- Split common GD -----#
+
+            def get_common_d(self):
+
+                mid = tether.models.NewRecentMatches1.objects.values('id_match4').distinct()
+                mat_id = tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid).values_list(
+                    'id_match4').distinct()
+
+                print(mid)
+                print(mat_id)
+
+                a = mat_id
+                mat_id = " ".join([x[0] for x in a])
+                print(mat_id)
+
+                match_ini = api.get_match_details(match_id=mat_id)
+                wanted = set(match_ini) - {'game_mode_name', 'human_players', 'match_id', 'game_mode', 'duration',
+                                           'lobby_type', 'lobby_name', 'engine', 'start_time', 'cluster'}
+                common_gd = match_ini
+                for unwanted_key in wanted:
+                    del common_gd[unwanted_key]
+
+                {'match_id': str(k) for k, v in common_gd.items()}
+                cd = tether.models.CommonData(**common_gd)
+                cd.save()
+                print(common_gd)
+
+            # get_common_d()
+
+            def get_dota_d(self):
+
+                mid = tether.models.NewRecentMatches1.objects.values('id_match4').distinct()
+                mat_id = tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid).values_list('id_match4').distinct()
+
+                print(mid)
+                print(mat_id)
+
+                a = mat_id
+                mat_id = " ".join([x[0] for x in a])
+                print(mat_id)
+
+                ini2 = api.get_match_details(match_id=mat_id)  # tether.models.NewRecentMatches.objects.values('id_match0'))  # copying the match_ini dictionary does not work, for unknown reason.
+                wanted2 = set(ini2) - {'match_id', 'leagueid', 'tower_status_radiant', 'first_blood_time',
+                                       'positive_votes', 'radiant_win', 'tower_status_dire', 'dire_score',
+                                       'pre_game_duration', 'flags', 'cluster_name', 'radiant_score',
+                                       'barracks_status_radiant', 'match_seq_num', 'barracks_status_dire',
+                                       'negative_votes'}
+                dota2gd = ini2
+                for unwanted_key in wanted2:
+                    del dota2gd[unwanted_key]
+
+                {'match_id': str(k) for k, v in dota2gd.items()}
+
+                dotad = tether.models.DotaData(**dota2gd)
+                dotad.save()
+
+                print(dota2gd)
+                # get_dota_d()
+
+
+
+        #-----------------------------------------------------------------------------------------------
+
+        r = PlayersAndData()
+        r.get_profile_match_hist()
+        r.get_match_players()
+        r.get_all_data()
+        r.get_common_d()
+        r.get_dota_d()
+    #------------------------------------------------------------------------------------------------------------
+    #datatable = tether.tables.PlayerData(tether.models.MatchData.objects.filter(id=120))
+    datatable = tether.tables.PlayerData(tether.models.MatchData.objects.raw('''SELECT * from match_data WHERE id >= 333'''))
     playertable = tether.tables.PlayerTable(tether.models.MatchPlayers.objects.filter(newrecentmatches1__userprofile1__steam_id=sid), prefix='1-')
     table = tether.tables.MatchTable(tether.models.NewRecentMatches1.objects.filter(userprofile1__steam_id=sid), prefix='2-')
     RequestConfig(request).configure(table)

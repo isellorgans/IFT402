@@ -210,17 +210,17 @@ class PlayersAndData(History):
         return p_entry
     #get_match_players()
     #----- Save match details / separate players and player details to sep table -----#
-
-    def get_profile_match_hist(self):
+    '''
+    def get_profile_match_hist(self, sid):
 
         api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
-        hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
+        #hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
 
         #getsid()
         #hist = api.get_match_history(account_id=views.getsid())
 
-        #test = views.profile.sid
-        #hist = api.get_match_history(account_id=test)
+        test = tether.views.profile.sid
+        hist = api.get_match_history(account_id=test)
 
         match_list2 = hist
 
@@ -259,7 +259,7 @@ class PlayersAndData(History):
 
 
     #get_profile_match_hist()
-
+    '''
     #--- end ---#
 
     def get_all_data(self):
@@ -317,7 +317,8 @@ class PlayersAndData(History):
     #get_dota_d()
 r = PlayersAndData()
 r.get_match_players()
-r.get_profile_match_hist()
+
+#r.get_profile_match_hist()
 r.get_all_data()
 r.get_common_d()
 r.get_dota_d()
