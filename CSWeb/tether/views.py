@@ -119,6 +119,7 @@ def user_logout(request):
 
 def public_leagues(request, league_name_slug):
     context_dict = {}
+    context_dict['matchbool'] = False
 
     league = League.objects.get(slug=league_name_slug)
     context_dict['league'] = league
@@ -128,6 +129,9 @@ def public_leagues(request, league_name_slug):
 
     matches = league.matches_set.all()
     context_dict['matches'] = matches
+    if context_dict['matches'] is not None:
+        context_dict['matchbool'] = True
+    #context_dict['matchurl'] = matches.id
 
     user = User.objects.get(pk=request.user.id)
 
@@ -157,9 +161,21 @@ def public_leagues(request, league_name_slug):
     return render(request, 'tether/public_leagues.html', context_dict)
 
 
+@login_required()
 def matches(request, match_id):
+    context_dict = {}
 
-    return render(request, 'tether/matches.html')
+    match = Matches.objects.get(id=match_id)
+    context_dict['match'] = match
+    p1 = None
+    if request.method == 'GET':
+        player1 = request.GET['player1_id']
+        if player1:
+            p1 = request.user
+            match.player1 = p1
+            match.save()
+
+    return render(request, 'tether/matches.html', context_dict)
 
 
 def join_public(request):

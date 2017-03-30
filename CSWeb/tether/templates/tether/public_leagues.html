@@ -74,11 +74,20 @@
 						<h3>Matches in League</h3>
                         <hr>
 
-                        {% for match in matches %}
-						<br>
-						<p>{{ match.name }}</p>
-						<br><hr>
-                        {% endfor %}
+                        {% if matchbool %}
+                            {% for match in matches %}
+                                <div class ="match_trigger">
+                                    <button onclick="setURL('{% url 'match' match.id %}')" class="btn-success btn-lg btn-block">{{ match.name }}</button>
+                                </div>
+						        <hr>
+                            {% endfor %}
+                        {% endif %}
+
+                        <script>
+                            function setURL(url){
+                                document.getElementById('iframe').src=url;
+                            }
+                        </script>
 
                         <form id="make_form" method="post" action=".">
                             {% csrf_token %}
@@ -89,14 +98,16 @@
                             {% endif %}
                         </form>
                     </div>
-				</div>
-			</div>
-			<div class="col-md-6 matches_lobby">
-                <iframe id="encoder_iframe" height="500px" width="750px" scrolling="yes" src="{% url 'match' 24 %}" frameborder="0"></iframe>
-			</div>
-		</div>
+			    </div>
+            </div>
+			        <div class="col-md-6 matches_lobby">
+                        <div class="row">
+                                <iframe id="iframe" style="position: fixed; height: 51%;width: 40%" scrolling="no" src="" frameborder="0"></iframe>
+                        </div>
+		            </div>
+            </div>
+        </div>
 		<br><br>
-	</div>
 	<div class="jumbotron">
 			<div class="row">
 				<div class="col-md-6">
