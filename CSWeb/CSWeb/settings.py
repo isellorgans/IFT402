@@ -76,7 +76,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -92,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'capstonedb',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '15vmlTG:re',
         'HOST': 'localhost',
         'PORT': '3306',
     }

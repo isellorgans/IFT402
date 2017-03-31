@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models import Count
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models import F
 
 
 # League model, PK is league_id and FK is to User
@@ -19,22 +20,32 @@ class League(models.Model):
         ('Diamond', 'Diamond'),
     )
     skill_level = models.CharField(max_length=255, default='BZ', blank=True, choices=SKILL_LEVELS)
-    #members = models.CharField(max_length=255)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     password = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(default='', unique=True)
+    password_status = models.CharField(max_length=3, null=True, blank=True)
+    players = models.IntegerField(null=True, blank=True)
 
-    def players(self):
-        return self.userprofile_set.count() + 1
+    #def players(self):
+        #return self.userprofile1_set.count() + 1
 
-    def password_status(self):
-        if self.password is not '' or None:
-            return "Yes"
-        else:
-            return "No"
+    #def password_status(self):
+        #if self.password is not '' or None:
+            #return "Yes"
+        #else:
+            #return "No"
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.league_name)
+        super(League, self).save(*args, **kwargs)
+
+        if self.password is not '' or None:
+            self.password_status = 'Yes'
+        else:
+            self.password_status = 'No'
+        super(League, self).save(*args, **kwargs)
+
+        self.players = self.userprofile1_set.count()
         super(League, self).save(*args, **kwargs)
 
     class Meta:
@@ -43,6 +54,21 @@ class League(models.Model):
     # Returns league name
     def __unicode__(self):
         return self.name
+
+
+class Matches(models.Model):
+    lobby = models.ForeignKey(League, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    player1 = models.CharField(max_length=255, null=True)
+    player2 = models.CharField(max_length=255, null=True)
+    player3 = models.CharField(max_length=255, null=True)
+    player4 = models.CharField(max_length=255, null=True)
+    player5 = models.CharField(max_length=255, null=True)
+    player6 = models.CharField(max_length=255, null=True)
+    player7 = models.CharField(max_length=255, null=True)
+    player8 = models.CharField(max_length=255, null=True)
+    player9 = models.CharField(max_length=255, null=True)
+    player10 = models.CharField(max_length=255, null=True)
 
 
 class PrizePool(models.Model):
@@ -58,7 +84,7 @@ class PrizePool(models.Model):
     def __unicode__(self):
         return self.name
 
-'''
+
 class RecentMatches(models.Model):
     match_id = models.CharField(max_length=200, primary_key=True)
     match_num = models.CharField(max_length=200)
@@ -73,7 +99,7 @@ class RecentMatches(models.Model):
     def __unicode__(self):
         return self.name
 
-'''
+
 class MatchPlayers(models.Model):
     #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE)
     #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE, default=1)
@@ -136,7 +162,7 @@ class UserProfile1(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     leagues = models.ManyToManyField(League)
     region = models.CharField(max_length=255)
-    steam_id = models.IntegerField(editable=False, blank=True, null=True)
+    steam_id = models.IntegerField(unique=True, editable=False, blank=True, null=True)
     win_rate = models.DecimalField(max_digits=10, decimal_places=2, default='0000000000',)
     average_gpm = models.DecimalField(max_digits=6, decimal_places=2, default='000000',)
     league_rank = models.CharField(max_length=255, default='Bronze',)
@@ -148,6 +174,9 @@ class UserProfile1(models.Model):
     # Returns username instead of unicode
     def __unicode__(self):
         return self.name
+
+#class PlayerLeagueSkill(models.Model):
+    #spec_league = models.ForeignKey(League)
 
 
 class Profiles_Matches(models.Model):

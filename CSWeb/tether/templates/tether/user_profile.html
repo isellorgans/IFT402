@@ -9,17 +9,31 @@
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
-<body class="container">
+<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
 	<header>
-		<a href="{% url 'intro' %}"><img src="{% static 'images/logo.jpg' %}" class="img img-rounded"></a>
-		<a href="{% url 'login' %}" class="btn btn-default login">Login</a>
-		<a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
+            <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary login">Register</a>
+            <form id="login_form" method="post" action='/tether/login/' class="navbar-form navbar-right">
+            {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-default">Sign In</button>
+            </form>
+        {% endif %}
 	</header><br>
 	<nav>
 		<ul class="nav nav-tabs nav-justified">
 			<li><a href="{% url 'index' %}">Home</a></li>
-			<li><a href="{% url 'join_public' %}">Community League</a></li>
-			<li><a href="{% url 'add_league' %}">Private Leagues</a></li>
+			<li><a href="{% url 'join_public' %}">Community Leagues</a></li>
+			<li><a href="{% url 'add_league' %}">Create Leagues</a></li>
 			<li class="active"><a href="#">Profile</a></li>
 		</ul>
 	</nav>
@@ -29,7 +43,7 @@
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="{% static 'images/image.png' %}" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static 'images/profile.jpg' %}" alt="Image"></div>
 				<div class="col-lg-7">
 					<p>Feel free to go through profiles of various Leagues, recently played matches and the latest news
 					</p>
@@ -57,11 +71,11 @@
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Steam Id</strong></td>
-										<td>{{ user.userprofile1.steam_id }}</td>
+										<td>{{ league.league_name }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Win Rate</strong></td>
-										<td>{{ user.userprofile1.newrecentmatches.id_match0 }}</td>
+										<td></td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>League Rank</strong></td>
@@ -77,70 +91,14 @@
 	</div>
 	<hr>
 	<div class="lower_content">
-
 		<table class="table table-bordered table-striped">
 			<tr>
 				<th>Recent Matches</th>
+				<th>Recent News</th>
 			</tr>
 			<tr>
-				<td>{% load django_tables2 %}{% render_table table %}</td>
-				<td> </td>
-			</tr>
-		</table>
-        <br />
-        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
-                <select name="view_wanted">
-                    <option value="matchplayers" >See Players for Match 0</option>
-                    <option value="matchplayers" >See Players for Match 1</option>
-                    <option value="matchplayers" >See Players for Match 2</option>
-                    <option value="matchplayers" >See Players for Match 3</option>
-                    <option value="matchplayers" >See Players for Match 4</option>
-
-                </select>
-            <input type="submit" value="View Players" />
-        </form>
-
-        <table class="table table-bordered table-striped">
-			<tr>
-				<th>Match Players</th>
-			</tr>
-			<tr>
-				<td>
-                    {% load django_tables2 %}{% render_table playertable %} {# remove whem conditional works #}
-                    {% if option in form == "matchplayers"%}
-
-                        % load django_tables2 %}{% render_table playertable %}
-
-                    {% endif %}
-
-                </td>
-				<td> </td>
-			</tr>
-		</table>
-        <br />
-        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
-                <select name="view_wanted">
-                    <option value="matchplayers" >See Data for Player 0</option>
-                    <option value="matchplayers" >See Data for Player 1</option>
-                    <option value="matchplayers" >See Data for Player 2</option>
-                    <option value="matchplayers" >See Data for Player 3</option>
-                    <option value="matchplayers" >See Data for Player 4</option>
-                    <option value="matchplayers" >See Data for Player 5</option>
-                    <option value="matchplayers" >See Data for Player 6</option>
-                    <option value="matchplayers" >See Data for Player 7</option>
-                    <option value="matchplayers" >See Data for Player 8</option>
-                    <option value="matchplayers" >See Data for Player 9</option>
-
-                </select>
-            <input type="submit" value="View Data" />
-        </form>
-        <table class="table table-bordered table-striped">
-			<tr>
-				<th>Match Data</th>
-			</tr>
-			<tr>
-				<td>{% load django_tables2 %}{% render_table playerdata %}</td>
-				<td> </td>
+				<td><br><br><br><br><br><br><br><br><br></td>
+				<td><br><br><br><br><br><br><br><br><br></td>
 			</tr>
 		</table>
 	</div>

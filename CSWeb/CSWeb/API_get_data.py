@@ -1,22 +1,14 @@
 import dota2api
 import django
 from nested_lookup import nested_lookup
-#from django.http import HttpRequest
-#import tether.models
-import tether
-#from tether import views
-
-
-
 django.setup()
-'''
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
 from CSWeb import settings
 from django.db import models
-from django.contrib.auth.models import User
-from tether import models
-'''
+
+import tether
+
+#settings.configure()
+
 # END API INIT IMPORTS
 
 # BEGIN SERIALIZATION IMPORTS (EXP. 2-6)
@@ -93,11 +85,8 @@ def get_match_hist():
     # ----- End match hist -----#
 get_match_hist()
 '''
-
 #--- New recent matches attempt ---#
-
 class History():
-
     '''
     def get_profile_match_hist(self):
         api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
@@ -132,11 +121,10 @@ class PlayersAndData(History):
     #def get_match_players(self):
     def get_match_players(self):
         api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
-        match_ini = api.get_match_details(match_id=3063467492)#tether.models.NewRecentMatches.objects.values.id_match0(3037647418))
-        ini2 = api.get_match_details(match_id=3063467492)  #tether.models.NewRecentMatches.objects.values.id_match0(3037647418))
+        match_ini = api.get_match_details(match_id=3043374938)#tether.models.NewRecentMatches.objects.values.id_match0(3037647418))
+        ini2 = api.get_match_details(match_id=3043374938)  #tether.models.NewRecentMatches.objects.values.id_match0(3037647418))
         hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
 
-        #hist = api.get_match_history(account_id=tether.views.profile.sid) # steam id queryset
         # ----- remove extraneous data -----#
         if 'picks_bans' in match_ini:
             del match_ini['picks_bans']
@@ -210,18 +198,11 @@ class PlayersAndData(History):
         return p_entry
     #get_match_players()
     #----- Save match details / separate players and player details to sep table -----#
-    '''
-    def get_profile_match_hist(self, sid):
+
+    def get_profile_match_hist(self):
 
         api = dota2api.Initialise("BFF23F667B3B31FD01663D230DF11C25")
-        #hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
-
-        #getsid()
-        #hist = api.get_match_history(account_id=views.getsid())
-
-        test = tether.views.profile.sid
-        hist = api.get_match_history(account_id=test)
-
+        hist = api.get_match_history(account_id=tether.models.UserProfile1.objects.values('steam_id'))  # steam id queryset
         match_list2 = hist
 
         # nested_lookup('match_id', recent_matches)
@@ -245,8 +226,13 @@ class PlayersAndData(History):
         new_entry = tether.models.NewRecentMatches1(**matches)
         #new_entry = p_entry.players.create(tether.models.NewRecentMatches(**matches))
         new_entry.save()
+        '''
+        prof = tether.models.UserProfile.objects.values_list('steam_id', flat=True).get(pk=1)
+        prof.save()
 
-        prof_id = tether.models.UserProfile1.objects.get(steam_id='63294227')
+        prof.recent_matches.add(new_entry)
+        '''
+        prof_id = tether.models.UserProfile1.objects.get(steam_id='101869174')
         prof_id.save()
         prof = tether.models.Profiles_Matches(profile_id=prof_id, match_id=new_entry)
         prof.save()
@@ -259,7 +245,7 @@ class PlayersAndData(History):
 
 
     #get_profile_match_hist()
-    '''
+
     #--- end ---#
 
     def get_all_data(self):
@@ -288,7 +274,7 @@ class PlayersAndData(History):
 #----- Split common GD -----#
 
     def get_common_d(self):
-        match_ini = api.get_match_details(match_id=3063467492)
+        match_ini = api.get_match_details(match_id=3043374938)
         wanted = set(match_ini) - {'game_mode_name', 'human_players', 'match_id', 'game_mode', 'duration', 'lobby_type', 'lobby_name', 'engine', 'start_time', 'cluster'}
         common_gd = match_ini
         for unwanted_key in wanted:
@@ -301,7 +287,7 @@ class PlayersAndData(History):
     #get_common_d()
 
     def get_dota_d(self):
-        ini2 = api.get_match_details(match_id=3063467492) #tether.models.NewRecentMatches.objects.values('id_match0'))  # copying the match_ini dictionary does not work, for unknown reason.
+        ini2 = api.get_match_details(match_id=3043374938) #tether.models.NewRecentMatches.objects.values('id_match0'))  # copying the match_ini dictionary does not work, for unknown reason.
         wanted2 = set(ini2) - {'match_id', 'leagueid', 'tower_status_radiant', 'first_blood_time', 'positive_votes', 'radiant_win', 'tower_status_dire', 'dire_score', 'pre_game_duration', 'flags', 'cluster_name', 'radiant_score', 'barracks_status_radiant', 'match_seq_num', 'barracks_status_dire', 'negative_votes'}
         dota2gd = ini2
         for unwanted_key in wanted2:
@@ -317,8 +303,7 @@ class PlayersAndData(History):
     #get_dota_d()
 r = PlayersAndData()
 r.get_match_players()
-
-#r.get_profile_match_hist()
+r.get_profile_match_hist()
 r.get_all_data()
 r.get_common_d()
 r.get_dota_d()
@@ -334,6 +319,12 @@ r.get_dota_d()
 
 #print(plrs_match_data)
 
+# **TO DO:
+#   MAKE NEW DICTIONARY MODEL TABLES
+#   ADD DICT.SAVES
+#   MAKE THIS THING A PRESENTABLE SET OF FUNCTIONS
+#   PUT THE PLAYER ID FUNCTION IN A LOOP
+#   CRY
 
 
 '''
