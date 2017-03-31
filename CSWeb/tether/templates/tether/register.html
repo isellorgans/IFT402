@@ -8,7 +8,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
-<body class="container">
+<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
 {% if registered %}
     <h1><a href="{% url 'index' %}">Thank you for registering! Click here to go to the home page!</a></h1>
 

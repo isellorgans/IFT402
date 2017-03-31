@@ -9,9 +9,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
-<body class="container">
+<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
 	<header>
-		<a href="{% url 'intro' %}"><img src="{% static "images/logo.jpg" %}" class="img img-rounded"></a>
+		<a href="{% url 'intro' %}"><img src="{% static "images/tether_1.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
         {% if user.is_authenticated %}
             <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
             <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
@@ -43,7 +43,7 @@
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="{% static "images/image.png" %}" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static "images/dota5.jpg" %}" alt="Image" height="218px" width="350px"></div>
 				<div class="col-lg-7">
 					<p>Welcome! Play your favorite online games while competing with other players across the globe. Join a League today to get started.
 					</p>
@@ -56,14 +56,33 @@
 		<h3>Featured Leagues</h3>
 		<hr>
 		<div class="row">
-            <div class="col-md-4"><a href="{% url 'public_league' leagueslug0 %}">League Name: {{ leaguename0 }}<br/>Region: {{ leagueregion0 }}<br/> Players: {{ leagueplayers0 }}</a></button></div>
-			<div class="col-md-4"><a href="{% url 'public_league' leagueslug1 %}">League Name: {{ leaguename1 }}<br/>Region: {{ leagueregion1 }}<br/> Players: {{ leagueplayers1 }}</a></div>
-			<div class="col-md-4"><a href="{% url 'public_league' leagueslug2 %}">League Name: {{ leaguename2 }}<br/>Region: {{ leagueregion2 }}<br/> Players: {{ leagueplayers2 }}</a></div>
-		</div>
+            <div class="col-md-4">
+                <div class="league-container" style="background-color: rgba(34, 34, 34, 0.88);">
+                    <a href="{% url 'public_league' leagueslug0 %}">League Name: {{ leaguename0 }}<br/>Region: {{ leagueregion0 }}<br/> Players: {{ leagueplayers0 }}</a>
+                </div>
+            </div>
+			<div class="col-md-4">
+                <div class="league-container" style="background-color: #e84c3d;">
+                    <a href="{% url 'public_league' leagueslug1 %}">League Name: {{ leaguename1 }}<br/>Region: {{ leagueregion1 }}<br/> Players: {{ leagueplayers1 }}</a>
+                </div>
+            </div>
+			<div class="col-md-4">
+                <div class="league-container" style="background-color: #2ecd71;">
+                    <a href="{% url 'public_league' leagueslug2 %}">League Name: {{ leaguename2 }}<br/>Region: {{ leagueregion2 }}<br/> Players: {{ leagueplayers2 }}</a></div>
+                </div>
+            </div>
 		<br>
 		<div class="row">
-			<div class="col-md-4"><a href="{% url 'public_league' leagueslug3 %}">League Name: {{ leaguename3 }}<br/>Region: {{ leagueregion3 }}<br/> Players: {{ leagueplayers3 }}</a></div>
-			<div class="col-md-4"><a href="{% url 'public_league' leagueslug4 %}">League Name: {{ leaguename4 }}<br/>Region: {{ leagueregion4 }}<br/> Players: {{ leagueplayers4 }}</a></div>
+			<div class="col-md-4">
+                <div class="league-container" style="background-color: #9b58b5;">
+                    <a href="{% url 'public_league' leagueslug3 %}">League Name: {{ leaguename3 }}<br/>Region: {{ leagueregion3 }}<br/> Players: {{ leagueplayers3 }}</a>
+                </div>
+            </div>
+			<div class="col-md-4">
+                <div class="league-container" style="background-color: #e77e23;">
+                    <a href="{% url 'public_league' leagueslug4 %}">League Name: {{ leaguename4 }}<br/>Region: {{ leagueregion4 }}<br/> Players: {{ leagueplayers4 }}</a>
+                </div>
+            </div>
 			<div class="col-md-4"><br><br><br><a href="{% url 'join_public' %}"><p id="continue">. . . <br> continue</p></a></div>
 		</div>
 	</div>
