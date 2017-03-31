@@ -42,6 +42,8 @@ body {
 }
 
 .container {
+	background-image:url(../../img/background.jpg);
+	background-attachment:fixed;
 	background-color: #4a597e; /*Silver color*/ 
 }
 
