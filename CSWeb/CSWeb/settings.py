@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_tables2',
+
 ]
 
 # http://stackoverflow.com/questions/37949198/wsgirequest-object-has-no-attribute-user-django-admin
@@ -76,7 +77,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'capstonedb',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '15vmlTG:re',
         'HOST': 'localhost',
         'PORT': '3306',
     }

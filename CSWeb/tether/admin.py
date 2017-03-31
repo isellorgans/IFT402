@@ -1,5 +1,5 @@
 from django.contrib import admin
-from tether.models import UserProfile1, League#, RecentMatches
+from tether.models import UserProfile1, League #RecentMatches
 
 
 class LeagueAdmin(admin.ModelAdmin):
