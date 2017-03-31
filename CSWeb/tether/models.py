@@ -70,6 +70,9 @@ class Matches(models.Model):
     player9 = models.CharField(max_length=255, null=True)
     player10 = models.CharField(max_length=255, null=True)
 
+    class Meta:
+        db_table = "matches"
+
 
 class PrizePool(models.Model):
     league_id = models.IntegerField()

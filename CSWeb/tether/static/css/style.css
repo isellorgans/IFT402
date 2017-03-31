@@ -6,8 +6,12 @@ header {
 	background-color: #211431
 }
 
+body {
+	background: #cccccc url(/tether/static/images/background.jpg) fixed;
+} 
+
 body, a, th, td {
-	color: #c3e8ef;
+	color: white;
 	font-family: 'Sansita', sans-serif;
 }
 
