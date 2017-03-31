@@ -42,9 +42,8 @@ body {
 }
 
 .container {
-	background-image:url(../../img/background.jpg);
-	background-attachment:fixed;
-	background-color: #4a597e; /*Silver color*/ 
+	/*Silver color*/
+	background: #4a597e url(/tether/static/images/background.jpg) fixed;
 }
 
 .footer-social-icons a {

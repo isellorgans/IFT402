@@ -15,7 +15,7 @@ class LeagueTable(tables.Table):
         attrs = {'class': 'table table-bordered table-hover'}
 
 class ResultsTable(tables.Table):
-    league_name = tables.Column()
+    league_name = tables.Column(attrs={'tr': {'bgcolor': 'black'}})
     region = tables.Column()
     skill_level = tables.Column()
     password_status = tables.Column()
