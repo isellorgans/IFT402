@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_tables2',
+
 ]
 
 # http://stackoverflow.com/questions/37949198/wsgirequest-object-has-no-attribute-user-django-admin

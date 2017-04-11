@@ -9,7 +9,6 @@ from django.db.models import F
 
 # League model, PK is league_id and FK is to User
 class League(models.Model):
-    # league_id = models.primary_key = True ###Can be default ID or this
     league_name = models.CharField(max_length=255)
     region = models.CharField(max_length=255)
     SKILL_LEVELS = (
@@ -25,15 +24,6 @@ class League(models.Model):
     slug = models.SlugField(default='', unique=True)
     password_status = models.CharField(max_length=3, null=True, blank=True)
     players = models.IntegerField(null=True, blank=True)
-
-    #def players(self):
-        #return self.userprofile1_set.count() + 1
-
-    #def password_status(self):
-        #if self.password is not '' or None:
-            #return "Yes"
-        #else:
-            #return "No"
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.league_name)
@@ -59,16 +49,16 @@ class League(models.Model):
 class Matches(models.Model):
     lobby = models.ForeignKey(League, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    player1 = models.CharField(max_length=255, null=True)
-    player2 = models.CharField(max_length=255, null=True)
-    player3 = models.CharField(max_length=255, null=True)
-    player4 = models.CharField(max_length=255, null=True)
-    player5 = models.CharField(max_length=255, null=True)
-    player6 = models.CharField(max_length=255, null=True)
-    player7 = models.CharField(max_length=255, null=True)
-    player8 = models.CharField(max_length=255, null=True)
-    player9 = models.CharField(max_length=255, null=True)
-    player10 = models.CharField(max_length=255, null=True)
+    player1 = models.CharField(max_length=20, default='')
+    player2 = models.CharField(max_length=20, default='')
+    player3 = models.CharField(max_length=20, default='')
+    player4 = models.CharField(max_length=20, default='')
+    player5 = models.CharField(max_length=20, default='')
+    player6 = models.CharField(max_length=20, default='')
+    player7 = models.CharField(max_length=20, default='')
+    player8 = models.CharField(max_length=20, default='')
+    player9 = models.CharField(max_length=20, default='')
+    player10 = models.CharField(max_length=20, default='')
 
     class Meta:
         db_table = "matches"
@@ -87,7 +77,7 @@ class PrizePool(models.Model):
     def __unicode__(self):
         return self.name
 
-
+'''
 class RecentMatches(models.Model):
     match_id = models.CharField(max_length=200, primary_key=True)
     match_num = models.CharField(max_length=200)
@@ -101,7 +91,7 @@ class RecentMatches(models.Model):
     # Returns match_id
     def __unicode__(self):
         return self.name
-
+'''
 
 class MatchPlayers(models.Model):
     #in_match = models.ForeignKey(DotaData, on_delete=models.CASCADE)
@@ -156,19 +146,17 @@ class PlayersInMatch(models.Model):
         return self.name
 
 
-
 # Expanding the default django User class to add more fields/attributes
 # One to one with django default user
 
 
 class UserProfile1(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    leagues = models.ManyToManyField(League)
+    leagues = models.ManyToManyField(League, through='LeagueMembership')
     region = models.CharField(max_length=255)
     steam_id = models.IntegerField(unique=True, editable=False, blank=True, null=True)
     win_rate = models.DecimalField(max_digits=10, decimal_places=2, default='0000000000',)
     average_gpm = models.DecimalField(max_digits=6, decimal_places=2, default='000000',)
-    league_rank = models.CharField(max_length=255, default='Bronze',)
     recent_matches = models.ManyToManyField(NewRecentMatches1, through='Profiles_Matches')
 
     class Meta:
@@ -178,8 +166,15 @@ class UserProfile1(models.Model):
     def __unicode__(self):
         return self.name
 
-#class PlayerLeagueSkill(models.Model):
-    #spec_league = models.ForeignKey(League)
+
+class LeagueMembership(models.Model):
+    profile = models.ForeignKey(UserProfile1, on_delete=models.CASCADE)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    player_skill = models.DecimalField(max_digits=6, decimal_places=2, default='500')
+
+    class Meta:
+        db_table = 'league_membership'
+        unique_together = ('profile', 'league')
 
 
 class Profiles_Matches(models.Model):

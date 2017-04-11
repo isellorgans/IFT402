@@ -8,6 +8,12 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <style>
+        .lower_content a {
+            color: black
+        }
+    </style>
 </head>
 <body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
 	<header>
@@ -71,11 +77,11 @@
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Steam Id</strong></td>
-										<td>{{ league.league_name }}</td>
+										<td>{{ user.userprofile1.steam_id }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>Win Rate</strong></td>
-										<td></td>
+										<td>{{ user.userprofile1.newrecentmatches.id_match0 }}</td>
 									</tr>
 									<tr>
 										<td class="lcol"><strong>League Rank</strong></td>
@@ -94,11 +100,67 @@
 		<table class="table table-bordered table-striped">
 			<tr>
 				<th>Recent Matches</th>
-				<th>Recent News</th>
+
 			</tr>
 			<tr>
-				<td><br><br><br><br><br><br><br><br><br></td>
-				<td><br><br><br><br><br><br><br><br><br></td>
+				<td>{% load django_tables2 %}{% render_table table %}</td>
+				<td></td>
+			</tr>
+		</table>
+        <br />
+        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
+                <select name="view_wanted">
+                    <option value="matchplayers" >See Players for Match 0</option>
+                    <option value="matchplayers" >See Players for Match 1</option>
+                    <option value="matchplayers" >See Players for Match 2</option>
+                    <option value="matchplayers" >See Players for Match 3</option>
+                    <option value="matchplayers" >See Players for Match 4</option>
+
+                </select>
+            <input type="submit" value="View Players" />
+        </form>
+
+        <table class="table table-bordered table-striped">
+			<tr>
+				<th>Match Players</th>
+			</tr>
+			<tr>
+				<td>
+                    {% load django_tables2 %}{% render_table playertable %} {# remove whem conditional works #}
+                    {% if option in form == "matchplayers"%}
+
+                        % load django_tables2 %}{% render_table playertable %}
+
+                    {% endif %}
+
+                </td>
+				<td> </td>
+			</tr>
+		</table>
+        <br />
+        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
+                <select name="view_wanted">
+                    <option value="matchplayers" >See Data for Player 0</option>
+                    <option value="matchplayers" >See Data for Player 1</option>
+                    <option value="matchplayers" >See Data for Player 2</option>
+                    <option value="matchplayers" >See Data for Player 3</option>
+                    <option value="matchplayers" >See Data for Player 4</option>
+                    <option value="matchplayers" >See Data for Player 5</option>
+                    <option value="matchplayers" >See Data for Player 6</option>
+                    <option value="matchplayers" >See Data for Player 7</option>
+                    <option value="matchplayers" >See Data for Player 8</option>
+                    <option value="matchplayers" >See Data for Player 9</option>
+
+                </select>
+            <input type="submit" value="View Data" />
+        </form>
+        <table class="table table-bordered table-striped">
+			<tr>
+				<th>Match Data</th>
+			</tr>
+			<tr>
+				<td>{% load django_tables2 %}{% render_table playerdata %}</td>
+				<td> </td>
 			</tr>
 		</table>
 	</div>

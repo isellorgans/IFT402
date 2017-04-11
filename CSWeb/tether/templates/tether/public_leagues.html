@@ -65,15 +65,16 @@
 						    <hr>
                         {% endfor %}
 
-                        <form id="password_form" method="post" action="." enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {% if password %}
-                                <label for="password">Password</label>
-                                <input type="text" name="password" id="password">
-                            {% endif %}
-                            <button id="join_submit" type="submit" class="btn btn-success btn-md btn-block" name="join">Join</button>
-                        </form>
-
+                        {% if join %}
+                            <form id="password_form" method="post" action="." enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if password %}
+                                    <label for="password">Password</label>
+                                    <input type="text" name="password" id="password">
+                                {% endif %}
+                                <button id="join_submit" type="submit" class="btn btn-success btn-md btn-block" name="join">Join</button>
+                            </form>
+                        {% endif %}
 					</div>
 					<div class="col-md-6 matches_in_league">
 						<h3>Matches in League</h3>
