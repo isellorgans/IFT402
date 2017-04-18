@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
@@ -59,12 +59,19 @@
 					<div class="col-md-6 players_in_league">
 						<h3>Players in League</h3>
                         <hr>
-
-                        {% for userprofile in users %}
-						    <p>{{ userprofile.user.username }}</p>
-						    <hr>
-                        {% endfor %}
-
+                        <p>
+                            {% for userprofile in users %}
+                                    {{ userprofile.user.username }}
+                                    {% if owner %}
+                                        <form id="kick_form" method="post" action=".">
+                                        {% csrf_token %}
+                                            <input type="hidden" name="kick" value={{ userprofile.id }}>
+                                            <button id="kick" type="submit" class="btn btn-success btn-sm">Kick</button>
+                                        </form>
+                                    {% endif %}
+						        <hr>
+                            {% endfor %}
+                        </p>
                         {% if join %}
                             <form id="password_form" method="post" action="." enctype="multipart/form-data">
                                 {% csrf_token %}

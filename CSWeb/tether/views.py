@@ -171,6 +171,12 @@ def public_leagues(request, league_name_slug):
         elif 'make' in request.POST:
             m = request.POST.get('makefield')
             Matches.objects.create(lobby=league, name=m)
+        elif 'kick' in request.POST:
+            if league.owner == user:
+                kp = request.POST.get('kick')
+                print(kp)
+                league.leaguemembership_set.filter(profile_id=kp).delete()
+                league.save()
 
     if user.userprofile1.leagues.filter(league_name=league.league_name):
         context_dict['join'] = False
@@ -183,6 +189,10 @@ def matches(request, match_id):
     context_dict = {}
     match = Matches.objects.get(id=match_id)
     context_dict['match'] = match
+    league = League.objects.get(matches=match)
+    user = User.objects.get(pk=request.user.id)
+    if league.owner == user:
+        context_dict['owner'] = True
     if request.method == 'POST':
         if 'p1' in request.POST:
             p = request.user.username
@@ -407,46 +417,48 @@ def matches(request, match_id):
     return render(request, 'tether/matches.html', context_dict)
 
 
-def join_public(request):
-    results = None
-    if request.method == 'GET':
-        search_query = request.GET.get('search_box', None)
+def join_public(request):  # view for users to look for leagues
+    results = None  # initiating results
+    if request.method == 'GET':  # if its a get request
+        search_query = request.GET.get('search_box', None)  # get the query entered into the search box
         if search_query is not None:
-            results = ResultsTable(League.objects.filter(
-                Q(league_name__icontains=search_query) |
-                Q(region__icontains=search_query) |
+            results = ResultsTable(League.objects.filter(  # django query to get any league object that
+                Q(league_name__icontains=search_query) |   # contains the user's query and put into
+                Q(region__icontains=search_query) |        # a results table
                 Q(skill_level__icontains=search_query) |
                 Q(password_status__icontains=search_query) |
                 Q(players__icontains=search_query)
             ))
 
-    table = LeagueTable(League.objects.all())
-    RequestConfig(request, paginate={'per_page': 20}).configure(table)
+    table = LeagueTable(League.objects.all()) # if there was no search query, generate normal table
+    RequestConfig(request, paginate={'per_page': 20}).configure(table)  # paginate table
 
     return render(request, "tether/join_public.html", {'table': table, 'results': results})
+    # return the template with provided context, ie. with users searched leagues.
 
 
-@login_required(login_url='/tether/login/')
-def add_league(request):
-    if request.method == 'POST':
-        form = LeagueForm(request.POST)
-        user = User.objects.get(pk=request.user.id)
+@login_required(login_url='/tether/login/')  # login decorator that requires login if user is not
+def add_league(request):  # view for users to create leagues
+    if request.method == 'POST':  # if it a post request
+        form = LeagueForm(request.POST)  # give the django form the user's input
+        user = User.objects.get(pk=request.user.id)  # identify user
 
         if form.is_valid():
-            forminstance = form.save(commit=False)
-            forminstance.owner = user
-            forminstance.save()
-            league = League.objects.filter(owner=user).latest('id')
+            forminstance = form.save(commit=False)  # associate user input but don't push to DB yet
+            forminstance.owner = user  # label the user as owner of the league
+            forminstance.save()  # save to database
+            league = League.objects.filter(owner=user).latest('id')  # query to get the just saved league
             uprofile = user.userprofile1
             lm = LeagueMembership(league=league, profile=uprofile, player_skill='500')
-            lm.save()
+            lm.save()  # create and save an association with the user and the league
+            league.save()
             return index(request)
         else:
-            print(form.errors)
+            print(form.errors)  # print errors if form is not valid
     else:
-        form = LeagueForm()
+        form = LeagueForm()  # provide the form if user hasn't posted yet
 
-    return render(request, 'tether/create.html', {'form': form})
+    return render(request, 'tether/create.html', {'form': form})  # return with form context
 
 
 @login_required(login_url='/tether/login/')
