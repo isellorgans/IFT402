@@ -35,7 +35,7 @@ class League(models.Model):
             self.password_status = 'No'
         super(League, self).save(*args, **kwargs)
 
-        self.players = self.userprofile1_set.count()
+        self.players = self.leaguemembership_set.count()
         super(League, self).save(*args, **kwargs)
 
     class Meta:
