@@ -18,6 +18,7 @@ from django.shortcuts import render
 import tether.models
 import tether.tables
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # from django.urls import NoReverseMatch
@@ -127,9 +128,7 @@ def user_logout(request):
 
 
 def public_leagues(request, league_name_slug):
-    context_dict = {}
-    context_dict['matchbool'] = False
-    context_dict['join'] = True
+    context_dict = {'matchbool': False, 'join': True}
 
     league = League.objects.get(slug=league_name_slug)
     context_dict['league'] = league
@@ -141,9 +140,14 @@ def public_leagues(request, league_name_slug):
     context_dict['matches'] = matches
     if context_dict['matches'] is not None:
         context_dict['matchbool'] = True
-    # context_dict['matchurl'] = matches.id
 
-    user = User.objects.get(pk=request.user.id)
+    try:
+        user = User.objects.get(pk=request.user.id)
+        if user.userprofile1.leagues.filter(league_name=league.league_name):
+            context_dict['join'] = False
+    except ObjectDoesNotExist:
+        user = None
+        context_dict['join'] = False
 
     if league.password_status == 'Yes':
         context_dict['password'] = True
@@ -160,6 +164,7 @@ def public_leagues(request, league_name_slug):
                     lm.save()
                     user.userprofile1.save()
                     league.save()
+                    return HttpResponseRedirect('/')
                 else:
                     print("The password was incorrect.")
             else:
@@ -178,242 +183,242 @@ def public_leagues(request, league_name_slug):
                 league.leaguemembership_set.filter(profile_id=kp).delete()
                 league.save()
 
-    if user.userprofile1.leagues.filter(league_name=league.league_name):
-        context_dict['join'] = False
-
     return render(request, 'tether/public_leagues.html', context_dict)
 
 
-@login_required()
 def matches(request, match_id):
     context_dict = {}
     match = Matches.objects.get(id=match_id)
     context_dict['match'] = match
     league = League.objects.get(matches=match)
-    user = User.objects.get(pk=request.user.id)
+    try:
+        user = User.objects.get(pk=request.user.id)
+    except ObjectDoesNotExist:
+        user = None
     if league.owner == user:
         context_dict['owner'] = True
-    if request.method == 'POST':
-        if 'p1' in request.POST:
-            p = request.user.username
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player1 = p
-            match.save()
-        elif 'p2' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player2 = p
-            match.save()
-        elif 'p3' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player3 = p
-            match.save()
-        elif 'p4' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player4 = p
-            match.save()
-        elif 'p5' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player5 = p
-            match.save()
-        elif 'p6' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player6 = p
-            match.save()
-        elif 'p7' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player7 = p
-            match.save()
-        elif 'p8' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player8 = p
-            match.save()
-        elif 'p9' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player10 == p:
-                match.player10 = 'Player 10'
-            match.player9 = p
-            match.save()
-        elif 'p10' in request.POST:
-            p = request.user.username
-            if match.player1 == p:
-                match.player1 = 'Player 1'
-            if match.player2 == p:
-                match.player2 = 'Player 2'
-            if match.player3 == p:
-                match.player3 = 'Player 3'
-            if match.player4 == p:
-                match.player4 = 'Player 4'
-            if match.player5 == p:
-                match.player5 = 'Player 5'
-            if match.player6 == p:
-                match.player6 = 'Player 6'
-            if match.player7 == p:
-                match.player7 = 'Player 7'
-            if match.player8 == p:
-                match.player8 = 'Player 8'
-            if match.player9 == p:
-                match.player9 = 'Player 9'
-            match.player10 = p
-            match.save()
+    if user is not None:
+        if request.method == 'POST':
+            if 'p1' in request.POST:
+                p = request.user.username
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player1 = p
+                match.save()
+            elif 'p2' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player2 = p
+                match.save()
+            elif 'p3' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player3 = p
+                match.save()
+            elif 'p4' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player4 = p
+                match.save()
+            elif 'p5' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player5 = p
+                match.save()
+            elif 'p6' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player6 = p
+                match.save()
+            elif 'p7' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player7 = p
+                match.save()
+            elif 'p8' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player8 = p
+                match.save()
+            elif 'p9' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player10 == p:
+                    match.player10 = 'Player 10'
+                match.player9 = p
+                match.save()
+            elif 'p10' in request.POST:
+                p = request.user.username
+                if match.player1 == p:
+                    match.player1 = 'Player 1'
+                if match.player2 == p:
+                    match.player2 = 'Player 2'
+                if match.player3 == p:
+                    match.player3 = 'Player 3'
+                if match.player4 == p:
+                    match.player4 = 'Player 4'
+                if match.player5 == p:
+                    match.player5 = 'Player 5'
+                if match.player6 == p:
+                    match.player6 = 'Player 6'
+                if match.player7 == p:
+                    match.player7 = 'Player 7'
+                if match.player8 == p:
+                    match.player8 = 'Player 8'
+                if match.player9 == p:
+                    match.player9 = 'Player 9'
+                match.player10 = p
+                match.save()
     return render(request, 'tether/matches.html', context_dict)
 
 
@@ -423,14 +428,14 @@ def join_public(request):  # view for users to look for leagues
         search_query = request.GET.get('search_box', None)  # get the query entered into the search box
         if search_query is not None:
             results = ResultsTable(League.objects.filter(  # django query to get any league object that
-                Q(league_name__icontains=search_query) |   # contains the user's query and put into
-                Q(region__icontains=search_query) |        # a results table
+                Q(league_name__icontains=search_query) |  # contains the user's query and put into
+                Q(region__icontains=search_query) |  # a results table
                 Q(skill_level__icontains=search_query) |
                 Q(password_status__icontains=search_query) |
                 Q(players__icontains=search_query)
             ))
 
-    table = LeagueTable(League.objects.all()) # if there was no search query, generate normal table
+    table = LeagueTable(League.objects.all())  # if there was no search query, generate normal table
     RequestConfig(request, paginate={'per_page': 20}).configure(table)  # paginate table
 
     return render(request, "tether/join_public.html", {'table': table, 'results': results})
