@@ -9,7 +9,7 @@ from django.db.models import F
 
 # League model, PK is league_id and FK is to User
 class League(models.Model):
-    league_name = models.CharField(max_length=255)
+    league_name = models.CharField(max_length=255, unique=True)
     region = models.CharField(max_length=255)
     SKILL_LEVELS = (
         ('Bronze', 'Bronze'),
