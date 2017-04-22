@@ -21,66 +21,157 @@
 				<hr>
 				<div class="row">
 					<div class="col-xs-6">
+                        <h3 style="text-align: center">Team 1</h3>
+                        <form method="post">
+                            {% csrf_token %}
+						    <button id="p1" name="p1" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player1 %}
+                                    {{ match.player1 }}
+                                {% else %}
+                                    Player 1
+                                {% endif %}
+                            </button>
 
-						<button id="p1" class="btn btn-success btn-lg btn-block" data-player1="{{ match.player1 }}" type="button">
-                            {% if match.player1 %}
-                                {{ match.player1 }}
-                            {% else %}
-                                Player 1
-                            {% endif %}
-                        </button>
+						    <br><br><br>
 
-						<br><br><br>
+						    <button id="p2" name="p2" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player2 %}
+                                    {{ match.player2 }}
+                                {% else %}
+                                    Player 2
+                                {% endif %}
+                            </button>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">Player 2</a>
+						    <br><br><br>
 
-						<br><br><br>
+                            <button id="p3" name="p3" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player3 %}
+                                    {{ match.player3 }}
+                                {% else %}
+                                    Player 3
+                                {% endif %}
+                            </button>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+						    <br><br><br>
 
-						<br><br><br>
+                            <button id="p4" name="p4" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player4 %}
+                                    {{ match.player4 }}
+                                {% else %}
+                                    Player 4
+                                {% endif %}
+                            </button>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+						    <br><br><br>
 
-						<br><br><br>
+                            <button id="p5" name="p5" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player5 %}
+                                    {{ match.player5 }}
+                                {% else %}
+                                    Player 5
+                                {% endif %}
+                            </button>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                        </form>
 
+					    </div>
 
-					</div>
+                    <div class="col-xs-6">
+                        <h3 style="text-align: center">Team 2</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button id="p6" name="p6" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player6 %}
+                                    {{ match.player6 }}
+                                {% else %}
+                                    Player 6
+                                {% endif %}
+                            </button>
 
-					<div class="col-xs-6">
+                            <br><br><br>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                            <button id="p7" name="p7" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player7 %}
+                                    {{ match.player7 }}
+                                {% else %}
+                                    Player 7
+                                {% endif %}
+                            </button>
 
-						<br><br><br>
+                            <br><br><br>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                            <button id="p8" name="p8" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player8 %}
+                                    {{ match.player8 }}
+                                {% else %}
+                                    Player 8
+                                {% endif %}
+                            </button>
 
-						<br><br><br>
+                            <br><br><br>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                            <button id="p9" name="p9" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player9 %}
+                                    {{ match.player9 }}
+                                {% else %}
+                                    Player 9
+                                {% endif %}
+                            </button>
 
-						<br><br><br>
+                            <br><br><br>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                            <button id="p10" name="p10" class="btn btn-success btn-lg btn-block" type="submit">
+                                {% if match.player10 %}
+                                    {{ match.player10 }}
+                                {% else %}
+                                    Player 10
+                                {% endif %}
+                            </button>
 
-						<br><br><br>
+                        </form>
 
-						<a class="btn btn-success btn-lg btn-block" href="#">etc</a>
+                    </div>
 
-					</div>
 				</div>
 				<hr>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $("#end").click(function () {
+                            $("#show").show();
+                        })
+                    })
+                </script>
 				<div class="row">
-					<div class="col-md-offset-3 col-md-3">
-						<button class="btn btn-default btn-block">Start</button>
-					</div>
-					<div class="col-md-3">
-						<button class="btn btn-warning btn-block">End Game</button>
-					</div>
+                    {% if not match.finished %}
+                        {% if owner %}
+					        <div class="col-md-offset-3 col-md-3">
+                                {% if match.locked %}
+                                    <h4>Match has been started.</h4>
+                                {% endif %}
+                                <form method="post">
+                                {% csrf_token %}
+						            <button id="start" type="submit" name="start" class="btn btn-default btn-block">Start Game</button>
+                                </form>
+					        </div>
+					        <div class="col-md-3">
+                                <button id="end" name="end" class="btn btn-warning btn-block">End Game</button>
+					        </div>
+                        {% endif %}
+                    {% else %}
+                        <h3>This match has been completed. Congratulations {{ match.winner }}!</h3>
+                    {% endif %}
 				</div>
+                <div class="row">
+                    <div id="show" style="display: none">
+                        <h2 style="text-align: center">Which team won?</h2>
+                        <form id="team1_form" method="post" action=".">
+                        {% csrf_token %}
+                            <button style="float: left; width: 33%" id="team1" name="team1" class="btn btn-default" type="submit">Team 1</button>
+                            <button style="float: right; width: 33%" id="team2" name="team2" class="btn btn-default" type="submit">Team 2</button>
+                        </form>
+                    </div>
+                </div>
 				<br>
 			</div>
 		</div>
