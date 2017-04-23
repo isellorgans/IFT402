@@ -15,9 +15,9 @@
         }
     </style>
 </head>
-<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
-	<header>
-		<a href="{% url 'intro' %}"><img src="{% static "images/tether_1.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
+<body class="container" style="background: #cccccc url({% static "images/../../static/images/background3.jpg" %}) fixed;">
+	<header style="background-color: #182a31; border: 1px solid #cbcbcb; border-radius: 5px;">
+		<a href="{% url 'intro' %}"><img src="{% static "images/tether_logo.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
         {% if user.is_authenticated %}
             <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
             <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
@@ -49,7 +49,7 @@
 		<hr>
 		<div class="jumbotron">
 			<div class="row">
-				<div class="col-lg-5"><img src="{% static 'images/profile.jpg' %}" alt="Image"></div>
+				<div class="col-lg-5"><img src="{% static 'images/profile2.jpg' %}" alt="Image"></div>
 				<div class="col-lg-7">
 					<p>Feel free to go through profiles of various Leagues, recently played matches and the latest news
 					</p>
@@ -79,6 +79,11 @@
 										<td class="lcol"><strong>Steam Id</strong></td>
 										<td>{{ user.userprofile1.steam_id }}</td>
 									</tr>
+                                    <tr>
+                                        <td class="locl"><strong>Leagues</strong></td>
+                                        <td>{{ user.userprofile1.leaguemembership.league.league_id }}</td>
+                                    </tr>
+                                    {% comment %}
 									<tr>
 										<td class="lcol"><strong>Win Rate</strong></td>
 										<td>{{ user.userprofile1.newrecentmatches.id_match0 }}</td>
@@ -87,6 +92,7 @@
 										<td class="lcol"><strong>League Rank</strong></td>
 										<td></td>
                                     </tr>
+                                    {% endcomment %}
                                 </table>
                             </div>
                         </div>
@@ -107,17 +113,19 @@
 				<td></td>
 			</tr>
 		</table>
-        <br />
-        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
-                <select name="view_wanted">
-                    <option value="matchplayers" >See Players for Match 0</option>
-                    <option value="matchplayers" >See Players for Match 1</option>
-                    <option value="matchplayers" >See Players for Match 2</option>
-                    <option value="matchplayers" >See Players for Match 3</option>
-                    <option value="matchplayers" >See Players for Match 4</option>
-
-                </select>
-            <input type="submit" value="View Players" />
+        <hr />
+        <h3>Match Players and Data</h3>
+        <hr>
+        <form action= "" method="post" style="color: royalblue"/>
+            {% csrf_token %}
+            {{ playerform.Players }} {{ playerform.Data }}
+            <br />
+            <br />
+            <input type="submit" value="View Players and Data" name="GetPlayers"/>
+        </form>
+        <p> </p>
+        <form action="" method="get" style="color: royalblue" />
+            <input type="submit" value="Reset the Data Table" name="Reset"/>
         </form>
 
         <table class="table table-bordered table-striped">
@@ -138,22 +146,8 @@
 			</tr>
 		</table>
         <br />
-        <form method="POST" action="" style="color: royalblue"/>{% csrf_token %}
-                <select name="view_wanted">
-                    <option value="matchplayers" >See Data for Player 0</option>
-                    <option value="matchplayers" >See Data for Player 1</option>
-                    <option value="matchplayers" >See Data for Player 2</option>
-                    <option value="matchplayers" >See Data for Player 3</option>
-                    <option value="matchplayers" >See Data for Player 4</option>
-                    <option value="matchplayers" >See Data for Player 5</option>
-                    <option value="matchplayers" >See Data for Player 6</option>
-                    <option value="matchplayers" >See Data for Player 7</option>
-                    <option value="matchplayers" >See Data for Player 8</option>
-                    <option value="matchplayers" >See Data for Player 9</option>
 
-                </select>
-            <input type="submit" value="View Data" />
-        </form>
+    <br />
         <table class="table table-bordered table-striped">
 			<tr>
 				<th>Match Data</th>

@@ -13,3 +13,4 @@ urlpatterns = [
     url(r'^add_league/?$', views.add_league, name='add_league'),
     url(r'^user_profile/?$', views.profile, name='profile')
 ]
+handler404 = 'tether.views.handler404'
