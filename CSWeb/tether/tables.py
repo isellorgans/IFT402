@@ -26,23 +26,6 @@ class ResultsTable(tables.Table):
     class Meta:
         attrs = {'class': 'table table-bordered table-hover'}
 
-class MatchesTable(tables.Table):
-    name = tables.Column()
-    player1 = tables.Column()
-    player2 = tables.Column()
-    player3 = tables.Column()
-    player4 = tables.Column()
-    player5 = tables.Column()
-    player6 = tables.Column()
-    player7 = tables.Column()
-    player8 = tables.Column()
-    player9 = tables.Column()
-    player10 = tables.Column()
-    winner = tables.Column()
-
-    class Meta:
-        attrs = {'class': 'table table-bordered table-hover'}
-
 class MatchTable(tables.Table):
     class Meta:
         model = models.NewRecentMatches1

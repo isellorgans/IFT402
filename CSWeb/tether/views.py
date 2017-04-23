@@ -2,26 +2,22 @@ from tether.forms import UserForm, UserProfileForm, LeagueForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user, logout
-from tether.models import League, UserProfile1, Matches, LeagueMembership
+from tether.models import League, UserProfile1, Matches
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from nested_lookup import nested_lookup
 from django.contrib import messages
-from django.db.models import Count, F
+from django.db.models import Count
 import dota2api
 from django_tables2 import RequestConfig
-from tether.tables import LeagueTable, ResultsTable, MatchesTable
+from tether.tables import LeagueTable, ResultsTable
 from django.views.generic.edit import CreateView
 from django.db.models import Q
 from django.shortcuts import render
 import tether.models
 import tether.tables
-from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
-
-
-# from django.urls import NoReverseMatch
+#from django.urls import NoReverseMatch
 
 
 def index(request):
@@ -128,26 +124,22 @@ def user_logout(request):
 
 
 def public_leagues(request, league_name_slug):
-    context_dict = {'matchbool': False, 'join': True}
+    context_dict = {}
+    context_dict['matchbool'] = False
 
     league = League.objects.get(slug=league_name_slug)
     context_dict['league'] = league
 
-    users = league.leaguemembership_set.all()
+    users = league.userprofile1_set.all()
     context_dict['users'] = users
 
-    matches = league.matches_set.filter(finished=False)
+    matches = league.matches_set.all()
     context_dict['matches'] = matches
     if context_dict['matches'] is not None:
         context_dict['matchbool'] = True
+    #context_dict['matchurl'] = matches.id
 
-    try:
-        user = User.objects.get(pk=request.user.id)
-        if user.userprofile1.leagues.filter(league_name=league.league_name):
-            context_dict['join'] = False
-    except ObjectDoesNotExist:
-        user = None
-        context_dict['join'] = False
+    user = User.objects.get(pk=request.user.id)
 
     if league.password_status == 'Yes':
         context_dict['password'] = True
@@ -159,446 +151,75 @@ def public_leagues(request, league_name_slug):
         if 'join' in request.POST:
             if league.password_status == "Yes":
                 if request.POST.get('password') == league.password:
-                    uprofile = user.userprofile1
-                    lm = LeagueMembership(league=league, profile=uprofile, player_skill='500')
-                    lm.save()
+                    user.userprofile1.leagues.add(league)
                     user.userprofile1.save()
                     league.save()
-                    return HttpResponseRedirect('.')
                 else:
                     print("The password was incorrect.")
             else:
-                uprofile = user.userprofile1
-                lm = LeagueMembership(league=league, profile=uprofile, player_skill='500')
-                lm.save()
+                user.userprofile1.leagues.add(league)
                 user.userprofile1.save()
                 league.save()
-                return HttpResponseRedirect('.')
         elif 'make' in request.POST:
             m = request.POST.get('makefield')
             Matches.objects.create(lobby=league, name=m)
-            return HttpResponseRedirect('.')
-        elif 'kick' in request.POST:
-            if league.owner == user:
-                kp = request.POST.get('kick')
-                print(kp)
-                league.leaguemembership_set.filter(profile_id=kp).delete()
-                league.save()
-                return HttpResponseRedirect('.')
-        elif 'delete' in request.POST:
-            if league.owner == user:
-                dl = request.POST.get('delete')
-                print(dl)
-                league.matches_set.filter(id=dl).delete()
-                league.save()
-                return HttpResponseRedirect('.')
-
-    table = MatchesTable(Matches.objects.filter(lobby=league.id))
-    context_dict['table'] = table
 
     return render(request, 'tether/public_leagues.html', context_dict)
 
 
+@login_required()
 def matches(request, match_id):
     context_dict = {}
+
     match = Matches.objects.get(id=match_id)
     context_dict['match'] = match
-    league = League.objects.get(matches=match)
-    try:
-        user = User.objects.get(pk=request.user.id)
-    except ObjectDoesNotExist:
-        user = None
-    if league.owner == user:
-        context_dict['owner'] = True
-
-    #if user.userprofile1.leagues.get(league_name=league.league_name).DoesNotExist:
-        #return HttpResponse("You are not a part of this league.")
-
-    if request.method == 'POST':
-        if not match.locked:
-            if 'p1' in request.POST:
-                p = request.user.username
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player1 = p
-                match.save()
-            elif 'p2' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player2 = p
-                match.save()
-            elif 'p3' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player3 = p
-                match.save()
-            elif 'p4' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player4 = p
-                match.save()
-            elif 'p5' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player5 = p
-                match.save()
-            elif 'p6' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player6 = p
-                match.save()
-            elif 'p7' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player7 = p
-                match.save()
-            elif 'p8' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player8 = p
-                match.save()
-            elif 'p9' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player10 == p:
-                    match.player10 = ''
-                match.player9 = p
-                match.save()
-            elif 'p10' in request.POST:
-                p = request.user.username
-                if match.player1 == p:
-                    match.player1 = ''
-                if match.player2 == p:
-                    match.player2 = ''
-                if match.player3 == p:
-                    match.player3 = ''
-                if match.player4 == p:
-                    match.player4 = ''
-                if match.player5 == p:
-                    match.player5 = ''
-                if match.player6 == p:
-                    match.player6 = ''
-                if match.player7 == p:
-                    match.player7 = ''
-                if match.player8 == p:
-                    match.player8 = ''
-                if match.player9 == p:
-                    match.player9 = ''
-                match.player10 = p
-                match.save()
-            elif 'start' in request.POST:
-                match.locked = True
-                match.save()
-                return HttpResponseRedirect('.')
-        elif 'team1' in request.POST and not match.finished:
-            if match.player1 is not '':
-                p1id = User.objects.get(username=match.player1).userprofile1.id
-                p1 = LeagueMembership.objects.get(profile=p1id, league=league.id)
-                p1.player_skill = F('player_skill') + 15
-                p1.save()
-            if match.player2 is not '':
-                p2id = User.objects.get(username=match.player2).userprofile1.id
-                p2 = LeagueMembership.objects.get(profile=p2id, league=league.id)
-                p2.player_skill = F('player_skill') + 15
-                p2.save()
-            if match.player3 is not '':
-                p3id = User.objects.get(username=match.player3).userprofile1.id
-                p3 = LeagueMembership.objects.get(profile=p3id, league=league.id)
-                p3.player_skill = F('player_skill') + 15
-                p3.save()
-            if match.player4 is not '':
-                p4id = User.objects.get(username=match.player4).userprofile1.id
-                p4 = LeagueMembership.objects.get(profile=p4id, league=league.id)
-                p4.player_skill = F('player_skill') + 15
-                p4.save()
-            if match.player5 is not '':
-                p5id = User.objects.get(username=match.player5).userprofile1.id
-                p5 = LeagueMembership.objects.get(profile=p5id, league=league.id)
-                p5.player_skill = F('player_skill') + 15
-                p5.save()
-            if match.player6 is not '':
-                p6id = User.objects.get(username=match.player6).userprofile1.id
-                p6 = LeagueMembership.objects.get(profile=p6id, league=league.id)
-                p6.player_skill = F('player_skill') - 15
-                p6.save()
-            if match.player7 is not '':
-                p7id = User.objects.get(username=match.player7).userprofile1.id
-                p7 = LeagueMembership.objects.get(profile=p7id, league=league.id)
-                p7.player_skill = F('player_skill') - 15
-                p7.save()
-            if match.player8 is not '':
-                p8id = User.objects.get(username=match.player8).userprofile1.id
-                p8 = LeagueMembership.objects.get(profile=p8id, league=league.id)
-                p8.player_skill = F('player_skill') - 15
-                p8.save()
-            if match.player9 is not '':
-                p9id = User.objects.get(username=match.player9).userprofile1.id
-                p9 = LeagueMembership.objects.get(profile=p9id, league=league.id)
-                p9.player_skill = F('player_skill') - 15
-                p9.save()
-            if match.player10 is not '':
-                p10id = User.objects.get(username=match.player10).userprofile1.id
-                p10 = LeagueMembership.objects.get(profile=p10id, league=league.id)
-                p10.player_skill = F('player_skill') - 15
-                p10.save()
-
-            match.finished = True
-            match.winner = 'Team 1'
+    p1 = None
+    if request.method == 'GET':
+        player1 = request.GET.get('player1_id')
+        if player1:
+            p1 = request.user
+            match.player1 = p1
             match.save()
-            return HttpResponseRedirect('.')
-
-        elif 'team2' in request.POST and not match.finished:
-            if match.player1 is not '':
-                p1id = User.objects.get(username=match.player1).userprofile1.id
-                p1 = LeagueMembership.objects.get(profile=p1id, league=league.id)
-                p1.player_skill = F('player_skill') - 15
-                p1.save()
-            if match.player2 is not '':
-                p2id = User.objects.get(username=match.player2).userprofile1.id
-                p2 = LeagueMembership.objects.get(profile=p2id, league=league.id)
-                p2.player_skill = F('player_skill') - 15
-                p2.save()
-            if match.player3 is not '':
-                p3id = User.objects.get(username=match.player3).userprofile1.id
-                p3 = LeagueMembership.objects.get(profile=p3id, league=league.id)
-                p3.player_skill = F('player_skill') - 15
-                p3.save()
-            if match.player4 is not '':
-                p4id = User.objects.get(username=match.player4).userprofile1.id
-                p4 = LeagueMembership.objects.get(profile=p4id, league=league.id)
-                p4.player_skill = F('player_skill') - 15
-                p4.save()
-            if match.player5 is not '':
-                p5id = User.objects.get(username=match.player5).userprofile1.id
-                p5 = LeagueMembership.objects.get(profile=p5id, league=league.id)
-                p5.player_skill = F('player_skill') - 15
-                p5.save()
-            if match.player6 is not '':
-                p6id = User.objects.get(username=match.player6).userprofile1.id
-                p6 = LeagueMembership.objects.get(profile=p6id, league=league.id)
-                p6.player_skill = F('player_skill') + 15
-                p6.save()
-            if match.player7 is not '':
-                p7id = User.objects.get(username=match.player7).userprofile1.id
-                p7 = LeagueMembership.objects.get(profile=p7id, league=league.id)
-                p7.player_skill = F('player_skill') + 15
-                p7.save()
-            if match.player8 is not '':
-                p8id = User.objects.get(username=match.player8).userprofile1.id
-                p8 = LeagueMembership.objects.get(profile=p8id, league=league.id)
-                p8.player_skill = F('player_skill') + 15
-                p8.save()
-            if match.player9 is not '':
-                p9id = User.objects.get(username=match.player9).userprofile1.id
-                p9 = LeagueMembership.objects.get(profile=p9id, league=league.id)
-                p9.player_skill = F('player_skill') + 15
-                p9.save()
-            if match.player10 is not '':
-                p10id = User.objects.get(username=match.player10).userprofile1.id
-                p10 = LeagueMembership.objects.get(profile=p10id, league=league.id)
-                p10.player_skill = F('player_skill') + 15
-                p10.save()
-
-            match.finished = True
-            match.winner = 'Team 2'
-            match.save()
-            return HttpResponseRedirect('.')
 
     return render(request, 'tether/matches.html', context_dict)
 
 
-def join_public(request):  # view for users to look for leagues
-    results = None  # initiating results
-    if request.method == 'GET':  # if its a get request
-        search_query = request.GET.get('search_box', None)  # get the query entered into the search box
+def join_public(request):
+    results = None
+    if request.method == 'GET':
+        search_query = request.GET.get('search_box', None)
         if search_query is not None:
-            results = ResultsTable(League.objects.filter(  # django query to get any league object that
-                Q(league_name__icontains=search_query) |  # contains the user's query and put into
-                Q(region__icontains=search_query) |  # a results table
+            results = ResultsTable(League.objects.filter(
+                Q(league_name__icontains=search_query) |
+                Q(region__icontains=search_query) |
                 Q(skill_level__icontains=search_query) |
                 Q(password_status__icontains=search_query) |
                 Q(players__icontains=search_query)
             ))
 
-    table = LeagueTable(League.objects.all())  # if there was no search query, generate normal table
-    RequestConfig(request, paginate={'per_page': 20}).configure(table)  # paginate table
+    table = LeagueTable(League.objects.all())
+    RequestConfig(request, paginate={'per_page': 20}).configure(table)
 
     return render(request, "tether/join_public.html", {'table': table, 'results': results})
-    # return the template with provided context, ie. with users searched leagues.
 
 
-@login_required(login_url='/tether/login/')  # login decorator that requires login if user is not
-def add_league(request):  # view for users to create leagues
-    if request.method == 'POST':  # if it a post request
-        form = LeagueForm(request.POST)  # give the django form the user's input
-        user = User.objects.get(pk=request.user.id)  # identify user
+@login_required(login_url='/tether/login/')
+def add_league(request):
+    if request.method == 'POST':
+        form = LeagueForm(request.POST)
+        user = User.objects.get(pk=request.user.id)
 
         if form.is_valid():
-            forminstance = form.save(commit=False)  # associate user input but don't push to DB yet
-            forminstance.owner = user  # label the user as owner of the league
-            forminstance.save()  # save to database
-            league = League.objects.filter(owner=user).latest('id')  # query to get the just saved league
-            uprofile = user.userprofile1
-            lm = LeagueMembership(league=league, profile=uprofile, player_skill='500')
-            lm.save()  # create and save an association with the user and the league
-            league.save()
+            forminstance = form.save(commit=False)
+            forminstance.owner = user
+            forminstance.save()
             return index(request)
         else:
-            print(form.errors)  # print errors if form is not valid
+            print(form.errors)
     else:
-        form = LeagueForm()  # provide the form if user hasn't posted yet
+        form = LeagueForm()
 
-    return render(request, 'tether/create.html', {'form': form})  # return with form context
+    return render(request, 'tether/create.html', {'form': form})
 
 
 @login_required(login_url='/tether/login/')
