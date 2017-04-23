@@ -34,13 +34,14 @@
     </script>
 
 </head>
-<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
+<body class="container" style="background: #cccccc url({% static "images/background3.jpg" %}) fixed;">
 	<div class="wrapper">
-		<div class="header">
+		<div class="header" style="background-color: #182a31; border: 1px solid #cbcbcb; border-radius: 5px;">
 			<div class="row">
 				<div class="col-md-3">
-		<a href="{% url 'intro' %}"><img src="{% static "images/tether_1.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
-				</div>
+		<a href="{% url 'intro' %}"><img src="{% static "images/tether_logo.png" %}" class="img-rounded" style="height: 100px; width: 100px"></a>
+				 <h1 class="title-column" style="float: right; font-size: 60px; margin-right: -150%"><strong>TETHER</strong></h1>
+                </div>
 				<div class="col-md-offset-7 col-md-2">
 					<div class="dropdown">
 						<button class="btn btn-default dropdown-toggle theme-btn" type="button" data-toggle="dropdown">Theme <span class="caret"></span></button>
@@ -83,17 +84,17 @@
 						<a href="{% url 'profile' %}">
 							<img id="intro-img-3" src="{% static 'images/dota_2.jpg' %}" class="img img-responsive img-rounded">
 							<div class="info">
-								<p>Brief statistics for public games available to registered players. Also, we provide a snapshot of your most recent matches!</p>
+								<p>Brief statistics for public games available to registered players. We also provide a snapshot of your most recent matches!</p>
 							</div>
 						</a>
 					</div>
 				</div>
 			</div>
 		</div> <!-- Content Section -->
-		<div class="footer">
-			MISC INFO
+		<div class="footer"style="background-color: #182a31; text-align: center;">
+			<p style="font-size: 18px; color: #c3e8ef; float:left">Ready to Get Started?</p>
 
-			<a href="{% url 'index' %}" class="btn btn-success pull-right" id="enter_site footer-btn">Enter Site</a>
+			<a href="{% url 'index' %}" class="btn btn-success text-center" id="enter_site footer-btn" style="font-size: 25px; color: #c3e8ef; text-align: center; margin-right: 150px">Enter Site</a>
 			<div class="clearfix"></div>
 		</div> <!-- Footer Section -->
 	</div> <!-- Wrapper for the body -->

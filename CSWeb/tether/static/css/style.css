@@ -126,3 +126,15 @@ header img {
 .lcol {
 	width: 30%; 
 }
+/*Style the popup modal here*/
+.in_league_table th {
+	text-align: center;
+}
+
+.modal-title, .modal-body {
+	color: #211431;
+}
+
+.modal-body a {
+	color: #4A597E;
+}

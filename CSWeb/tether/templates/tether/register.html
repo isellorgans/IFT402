@@ -65,6 +65,16 @@
   </div>
 </div>
 
+<!-- Text input-->
+<div class="form-group">
+  {{ profile_form.steam_id.errors }}
+  <label class="col-md-4 control-label" for="{{ profile_form.steam_id.id_for_label }}">Steam ID</label>
+  <div class="col-md-4">
+  {{ profile_form.steam_id }}
+  <span class="help-block"> </span>
+  </div>
+</div>
+
 <!-- Button -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="singlebutton"> </label>

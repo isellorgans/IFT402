@@ -37,9 +37,9 @@
         }
     </style>
 </head>
-<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
-	<header>
-		<a href="{% url 'intro' %}"><img src="{% static "images/tether_1.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
+<body class="container" style="background: #cccccc url({% static "images/background3.jpg" %}) fixed;">
+	<header style="background-color: #182a31; border: 1px solid #cbcbcb; border-radius: 5px;">
+		<a href="{% url 'intro' %}"><img src="{% static "images/tether_logo.png" %}" class="img img-rounded" style="height: 100px; width: 100px"></a>
         {% if user.is_authenticated %}
             <a href="{% url 'logout' %}" class="btn btn-default login">Logout</a>
             <a href="{% url 'profile' %}" class="btn btn-default login">{{ request.user.username }}</a>
