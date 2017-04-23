@@ -7,4 +7,4 @@ pillow==3.4.2
 pymysql==0.7.9
 whitenoise==2.0.6
 setuptools==20.10.1
-virtualenc==15.0.3
+virtualenv==15.0.3
