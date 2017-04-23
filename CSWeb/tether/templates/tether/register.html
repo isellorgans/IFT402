@@ -8,7 +8,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
-<body class="container" style="background: #cccccc url({% static "images/background.jpg" %}) fixed;">
+<body class="container" style="background: #cccccc url({% static "images/background3.jpg" %}) fixed;">
 {% if registered %}
     <h1><a href="{% url 'index' %}">Thank you for registering! Click here to go to the home page!</a></h1>
 
@@ -74,6 +74,17 @@
   <span class="help-block"> </span>
   </div>
 </div>
+
+                <div class="note" style="background-color: #182a31; alignment: center; margin-left: 100px; margin-right: 100px">
+                    <h4 style="text-align: center">NOTE: In order to view your recent match statistics you MUST register with a valid Steam ID.
+                    <br /> <br />
+                    Please enter the newer format Steam3ID associated with your account.
+                        If you are unsure about where to find this, head over to <a href="https://www.opendota.com/" style="color: #2aabd2">OpenDota</a> and search for your Steam account.
+                    <br /> <br />
+                     If you are not able to view your personal Tether profile after registering, please contact an Administrator.
+                        <br />
+                    </h4>
+                </div>
 
 <!-- Button -->
 <div class="form-group">
