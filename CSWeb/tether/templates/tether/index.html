@@ -58,39 +58,29 @@
 		<div class="row">
             <div class="col-md-4">
                 <div class="league-container" style="background-color: rgba(34, 34, 34, 0.88);">
-                    {% if leagueslug0 %}
-                        <a href="{% url 'public_league' leagueslug0 %}">League Name: {{ leaguename0 }}<br/>Region: {{ leagueregion0 }}<br/> Players: {{ leagueplayers0 }}</a>
-                    {% endif %}
+                    <a href="{% url 'public_league' leagueslug0 %}">League Name: {{ leaguename0 }}<br/>Region: {{ leagueregion0 }}<br/> Players: {{ leagueplayers0 }}</a>
                 </div>
             </div>
 			<div class="col-md-4">
                 <div class="league-container" style="background-color: #e84c3d;">
-                    {% if leagueslug1 %}
-                        <a href="{% url 'public_league' leagueslug1 %}">League Name: {{ leaguename1 }}<br/>Region: {{ leagueregion1 }}<br/> Players: {{ leagueplayers1 }}</a>
-                    {% endif %}
+                    <a href="{% url 'public_league' leagueslug1 %}">League Name: {{ leaguename1 }}<br/>Region: {{ leagueregion1 }}<br/> Players: {{ leagueplayers1 }}</a>
                 </div>
             </div>
 			<div class="col-md-4">
                 <div class="league-container" style="background-color: #2ecd71;">
-                    {% if leagueslug2 %}
-                        <a href="{% url 'public_league' leagueslug2 %}">League Name: {{ leaguename2 }}<br/>Region: {{ leagueregion2 }}<br/> Players: {{ leagueplayers2 }}</a></div>
-                    {% endif %}
+                    <a href="{% url 'public_league' leagueslug2 %}">League Name: {{ leaguename2 }}<br/>Region: {{ leagueregion2 }}<br/> Players: {{ leagueplayers2 }}</a></div>
                 </div>
             </div>
 		<br>
 		<div class="row">
 			<div class="col-md-4">
                 <div class="league-container" style="background-color: #9b58b5;">
-                    {% if leagueslug3 %}
-                        <a href="{% url 'public_league' leagueslug3 %}">League Name: {{ leaguename3 }}<br/>Region: {{ leagueregion3 }}<br/> Players: {{ leagueplayers3 }}</a>
-                    {% endif %}
+                    <a href="{% url 'public_league' leagueslug3 %}">League Name: {{ leaguename3 }}<br/>Region: {{ leagueregion3 }}<br/> Players: {{ leagueplayers3 }}</a>
                 </div>
             </div>
 			<div class="col-md-4">
                 <div class="league-container" style="background-color: #e77e23;">
-                    {% if leagueslug4 %}
-                        <a href="{% url 'public_league' leagueslug4 %}">League Name: {{ leaguename4 }}<br/>Region: {{ leagueregion4 }}<br/> Players: {{ leagueplayers4 }}</a>
-                    {% endif %}
+                    <a href="{% url 'public_league' leagueslug4 %}">League Name: {{ leaguename4 }}<br/>Region: {{ leagueregion4 }}<br/> Players: {{ leagueplayers4 }}</a>
                 </div>
             </div>
 			<div class="col-md-4"><br><br><br><a href="{% url 'join_public' %}"><p id="continue">. . . <br> continue</p></a></div>

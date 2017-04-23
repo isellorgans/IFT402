@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-{% load django_tables2 %}
 
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
@@ -13,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <title>Online League Station | Create or Join Leagues</title>
     <style>
-        input, select, textarea, .league_table a {
+        input, select, textarea {
             color: black;
         }
     </style>
@@ -58,31 +57,23 @@
 			<div class="col-md-6">
 				<div class="row">
 					<div class="col-md-6 players_in_league">
-                        <span style="font-size: x-large">Players in League</span> <span style="float: right">Skill</span>
+						<h3>Players in League</h3>
                         <hr>
-                        <p>
-                            {% for userprofile in users %}
-                                <span>{{ userprofile.profile.user.username }}</span> <span style="float: right">{{ userprofile.player_skill }}</span>
-                                    {% if owner %}
-                                        <form id="kick_form" method="post" action=".">
-                                        {% csrf_token %}
-                                            <input type="hidden" name="kick" value={{ userprofile.profile.id }}>
-                                            <button id="kick" type="submit" class="btn btn-success btn-sm">Kick</button>
-                                        </form>
-                                    {% endif %}
-						        <hr>
-                            {% endfor %}
-                        </p>
-                        {% if join %}
-                            <form id="password_form" method="post" action="." enctype="multipart/form-data">
-                                {% csrf_token %}
-                                {% if password %}
-                                    <label for="password">Password</label>
-                                    <input type="text" name="password" id="password">
-                                {% endif %}
-                                <button id="join_submit" type="submit" class="btn btn-success btn-md btn-block" name="join">Join</button>
-                            </form>
-                        {% endif %}
+
+                        {% for userprofile in users %}
+						    <p>{{ userprofile.user.username }}</p>
+						    <hr>
+                        {% endfor %}
+
+                        <form id="password_form" method="post" action="." enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if password %}
+                                <label for="password">Password</label>
+                                <input type="text" name="password" id="password">
+                            {% endif %}
+                            <button id="join_submit" type="submit" class="btn btn-success btn-md btn-block" name="join">Join</button>
+                        </form>
+
 					</div>
 					<div class="col-md-6 matches_in_league">
 						<h3>Matches in League</h3>
@@ -92,13 +83,6 @@
                             {% for match in matches %}
                                 <div class ="match_trigger">
                                     <button onclick="setURL('{% url 'match' match.id %}')" class="btn-success btn-lg btn-block">{{ match.name }}</button>
-                                    {% if owner %}
-                                        <form id="delete_form" method="post" action=".">
-                                        {% csrf_token %}
-                                            <input type="hidden" name="delete" value={{ match.id }}>
-                                            <button id="delete" type="submit" class="btn btn-success btn-sm">Delete</button>
-                                        </form>
-                                    {% endif %}
                                 </div>
 						        <hr>
                             {% endfor %}
@@ -123,7 +107,7 @@
             </div>
 			        <div class="col-md-6 matches_lobby">
                         <div class="row">
-                                <iframe id="iframe" width="585" height="900" class="embed-responsive-item" scrolling="no" src="" frameborder="0"></iframe>
+                                <iframe id="iframe" width="585" height="800" class="embed-responsive-item" scrolling="no" src="" frameborder="0"></iframe>
                         </div>
 		            </div>
             </div>
@@ -132,10 +116,7 @@
 	<div class="jumbotron">
 			<div class="row">
 				<div class="col-md-6">
-					<h3>Match History</h3>
-                    <div class="league_table">
-                        {% render_table table %}
-                    </div>
+					<h3>League Records/ History</h3>
 				</div>
 			</div>
 		</div>
